@@ -12,6 +12,7 @@
 }
 
 .header__nav a {
+  position: relative;
   color: var(--color-rojo);
   font-family: 'Quicksand', sans-serif;
   text-decoration: none;
@@ -39,19 +40,49 @@
   height: auto;
 }
 
+.header__adorno {
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+}
+
+.header__adorno--flores {
+  width: 35px;
+  right: -22px;
+  bottom: -15px;
+}
+
+.header__adorno--taza {
+  width: 30px;
+  left: 5px;
+  top: -28px;
+}
+
 @media (max-width: 600px) {
   .header__nav {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 12px;
+    gap: 20px;
   }
 
   .header__logo {
     order: -1;
     width: 100%;
+    margin-bottom: 15px;
   }
 
   .header__logo img {
     margin: 0 auto;
+  }
+
+  .header__adorno--flores {
+    width: 25px;
+    right: -14px;
+    bottom: -12px;
+  }
+
+  .header__adorno--taza {
+    width: 25px;
+    top: -24px;
   }
 }
