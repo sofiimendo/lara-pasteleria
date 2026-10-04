@@ -1,5 +1,6 @@
 .inicio {
-  padding: 80px 24px 100px;
+  position: relative;
+  padding: 100px 24px 180px;
   background-image:
     linear-gradient(
       rgba(235, 223, 213, 0.85),
@@ -13,92 +14,106 @@
 .inicio__contenido {
   position: relative;
   max-width: 900px;
-  min-height: 400px;
+  height: 400px;
   margin: 0 auto;
-  border: 2px solid var(--color-verde);
-  border-radius: 50%;
+  background-image: url('../../assets/elementos/ovalo.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .inicio__titulo {
-  max-width: 480px;
+  max-width: 650px;
   margin: 0;
-  padding: 24px;
+  padding: 24px 80px;
   color: var(--color-verde);
-  font-size: clamp(28px, 4vw, 48px);
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 500;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.3;
 }
 
-.inicio__imagen {
+.inicio__producto {
   position: absolute;
-  width: 180px;
+  width: 160px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.inicio__producto img {
+  display: block;
+  width: 100%;
   height: auto;
 }
 
-.inicio__imagen--torta {
-  left: -35px;
-  top: 100px;
+.inicio__producto--medialuna {
+  width: 140px;
 }
 
-.inicio__imagen--medialuna {
-  width: 160px;
-  top: -65px;
+.inicio__producto--waffle {
+  width: 150px;
+}
+
+.inicio__descripcion {
+  position: absolute;
+  bottom: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
+  width: 190px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background-color: var(--color-coral);
+  color: var(--color-texto);
+  font-size: 14px;
+  line-height: 1.3;
+  text-align: center;
+  pointer-events: none;
 }
 
-.inicio__imagen--cafe {
-  right: -35px;
-  top: 100px;
+.inicio__descripcion[hidden] {
+  display: none;
 }
 
-.inicio__imagen--waffle {
-  width: 170px;
-  bottom: -65px;
-  left: 50%;
-  transform: translateX(-50%);
+.inicio__producto:hover,
+.inicio__producto:focus {
+  z-index: 2;
 }
 
-@media (max-width: 600px) {
-  .inicio {
-    padding: 70px 24px 80px;
-  }
-
-  .inicio__contenido {
-    min-height: 350px;
-  }
-
-  .inicio__titulo {
-    max-width: 260px;
-    padding: 40px;
-    font-size: 28px;
-  }
-
-  .inicio__imagen--torta {
-    width: 100px;
-    left: -15px;
-    top: 120px;
-  }
-
-  .inicio__imagen--medialuna {
-    width: 120px;
-    top: -45px;
-  }
-
-  .inicio__imagen--cafe {
-    width: 100px;
-    right: -15px;
-    top: 120px;
-  }
-
-  .inicio__imagen--waffle {
-    width: 120px;
-    bottom: -45px;
-  }
+.inicio__producto:focus-visible {
+  outline: 2px solid var(--color-verde);
+  outline-offset: 5px;
+  border-radius: 12px;
 }
+
+.inicio__control {
+  display: block;
+  margin: 110px auto 0;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--color-verde);
+  font: inherit;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.inicio__control:hover {
+  color: var(--color-rojo);
+}
+
+.inicio__control:focus-visible {
+  outline: 2px solid var(--color-verde);
+  outline-offset: 4px;
+}
+
 .inicio__adorno {
   position: absolute;
   height: auto;
@@ -106,28 +121,59 @@
 }
 
 .inicio__adorno--flores {
-  width: 100px;
-  left: 90px;
-  bottom: 10px;
+  width: 70px;
+  left: 30px;
+  bottom: 25px;
 }
 
-.inicio__adorno--estrella {
-  width: 55px;
-  right: 120px;
-  top: 15px;
+.inicio__adorno--medialuna {
+  width: 60px;
+  right: 30px;
+  bottom: 25px;
 }
-
 
 @media (max-width: 600px) {
-  .inicio__adorno--flores {
-    width: 55px;
-    left: 25px;
-    bottom: 25px;
+  .inicio {
+    padding: 90px 48px 150px;
   }
 
-  .inicio__adorno--estrella {
-    width: 35px;
-    right: 35px;
-    top: 35px;
+  .inicio__contenido {
+    height: 350px;
+  }
+
+  .inicio__titulo {
+    max-width: 220px;
+    padding: 16px 30px;
+    font-size: 22px;
+  }
+
+  .inicio__producto {
+    width: 85px;
+  }
+
+  .inicio__producto--medialuna,
+  .inicio__producto--waffle {
+    width: 95px;
+  }
+
+  .inicio__descripcion {
+    width: 140px;
+    font-size: 12px;
+  }
+
+  .inicio__control {
+    margin-top: 120px;
+  }
+
+  .inicio__adorno--flores {
+    width: 45px;
+    left: 15px;
+    bottom: 20px;
+  }
+
+  .inicio__adorno--medialuna {
+    width: 40px;
+    right: 15px;
+    bottom: 20px;
   }
 }
