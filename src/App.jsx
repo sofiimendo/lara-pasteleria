@@ -1,12 +1,12 @@
 import Header from './components/Header/Header'
+import Inicio from './components/Inicio/Inicio'
 
 function App() {
   return (
     <>
       <Header />
-
-      <main id="inicio">
-        <h1>Lara Pastelería</h1>
+      <main>
+        <Inicio />
       </main>
     </>
   )
