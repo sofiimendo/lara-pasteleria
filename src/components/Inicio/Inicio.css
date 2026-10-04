@@ -1,0 +1,133 @@
+.inicio {
+  padding: 80px 24px 100px;
+  background-image:
+    linear-gradient(
+      rgba(235, 223, 213, 0.85),
+      rgba(235, 223, 213, 0.85)
+    ),
+    url('../../assets/textura-background.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.inicio__contenido {
+  position: relative;
+  max-width: 900px;
+  min-height: 400px;
+  margin: 0 auto;
+  border: 2px solid var(--color-verde);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inicio__titulo {
+  max-width: 480px;
+  margin: 0;
+  padding: 24px;
+  color: var(--color-verde);
+  font-size: clamp(28px, 4vw, 48px);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.inicio__imagen {
+  position: absolute;
+  width: 180px;
+  height: auto;
+}
+
+.inicio__imagen--torta {
+  left: -35px;
+  top: 100px;
+}
+
+.inicio__imagen--medialuna {
+  width: 160px;
+  top: -65px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.inicio__imagen--cafe {
+  right: -35px;
+  top: 100px;
+}
+
+.inicio__imagen--waffle {
+  width: 170px;
+  bottom: -65px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 600px) {
+  .inicio {
+    padding: 70px 24px 80px;
+  }
+
+  .inicio__contenido {
+    min-height: 350px;
+  }
+
+  .inicio__titulo {
+    max-width: 260px;
+    padding: 40px;
+    font-size: 28px;
+  }
+
+  .inicio__imagen--torta {
+    width: 100px;
+    left: -15px;
+    top: 120px;
+  }
+
+  .inicio__imagen--medialuna {
+    width: 120px;
+    top: -45px;
+  }
+
+  .inicio__imagen--cafe {
+    width: 100px;
+    right: -15px;
+    top: 120px;
+  }
+
+  .inicio__imagen--waffle {
+    width: 120px;
+    bottom: -45px;
+  }
+}
+.inicio__adorno {
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+}
+
+.inicio__adorno--flores {
+  width: 100px;
+  left: 90px;
+  bottom: 10px;
+}
+
+.inicio__adorno--estrella {
+  width: 55px;
+  right: 120px;
+  top: 15px;
+}
+
+
+@media (max-width: 600px) {
+  .inicio__adorno--flores {
+    width: 55px;
+    left: 25px;
+    bottom: 25px;
+  }
+
+  .inicio__adorno--estrella {
+    width: 35px;
+    right: 35px;
+    top: 35px;
+  }
+}
