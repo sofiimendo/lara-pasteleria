@@ -1,6 +1,7 @@
 import Header from './components/Header/Header'
 import Inicio from './components/Inicio/Inicio'
 import Separador from './components/Separador/Separador'
+import SobreMi from './components/SobreMi/SobreMi'
 import Pedidos from './components/Pedidos/Pedidos'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       <main>
         <Inicio />
         <Separador />
+        <SobreMi />
         <Pedidos />
       </main>
     </>

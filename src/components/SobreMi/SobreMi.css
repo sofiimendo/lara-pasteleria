@@ -1,0 +1,96 @@
+.sobre-mi {
+  padding: 52px 24px 60px;
+  background-color: #ffd6d1;
+  color: var(--color-texto);
+}
+
+.sobre-mi__contenido {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.sobre-mi__encabezado {
+  position: relative;
+  width: fit-content;
+  margin: 0 auto 28px;
+}
+
+.sobre-mi__titulo {
+  margin: 0;
+  padding: 6px 18px;
+  border: 1px solid var(--color-rojo);
+  border-radius: 24px;
+  color: var(--color-rojo);
+  font-size: 28px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.sobre-mi__flor {
+  position: absolute;
+  width: 35px;
+  height: auto;
+  right: -20px;
+  bottom: -12px;
+  pointer-events: none;
+}
+
+.sobre-mi__saludo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  color: var(--color-verde);
+}
+
+.sobre-mi__saludo p {
+  margin: 0;
+  font-size: 20px;
+  text-transform: uppercase;
+}
+
+.sobre-mi__saludo img {
+  width: 14px;
+  height: auto;
+}
+
+.sobre-mi__historia {
+  font-size: 18px;
+  line-height: 1.6;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.sobre-mi__historia p {
+  margin: 0 0 24px;
+}
+
+.sobre-mi__historia p:last-child {
+  margin-bottom: 0;
+}
+
+.sobre-mi__historia strong {
+  color: var(--color-rojo);
+  font-weight: 400;
+}
+
+@media (max-width: 600px) {
+  .sobre-mi {
+    padding: 40px 24px;
+  }
+
+  .sobre-mi__titulo {
+    font-size: 24px;
+  }
+
+  .sobre-mi__saludo p {
+    font-size: 18px;
+  }
+
+  .sobre-mi__historia {
+    font-size: 15px;
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+}
