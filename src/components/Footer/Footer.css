@@ -1,0 +1,99 @@
+.footer {
+  padding: 32px 24px;
+  background-color: var(--color-coral);
+  color: var(--color-verde);
+}
+
+.footer__contenido {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 32px;
+}
+
+.footer__contacto {
+  width: fit-content;
+  text-align: center;
+}
+
+.footer__titulo {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.footer__invitacion {
+  margin: 4px 0 12px;
+  font-style: italic;
+}
+
+.footer__redes {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.footer__redes a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.footer__redes img {
+  display: block;
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.footer__redes a:hover {
+  background-color: var(--color-beige);
+}
+
+.footer__redes a:focus-visible {
+  outline: 2px solid var(--color-verde);
+  outline-offset: 4px;
+}
+
+.footer__corazon {
+  display: block;
+  width: 36px;
+  height: auto;
+}
+
+.footer__marca {
+  justify-self: end;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.footer__marca p {
+  margin: 0;
+}
+
+.footer__nombre {
+  font-size: 18px;
+  margin-bottom: 6px !important;
+}
+
+@media (max-width: 600px) {
+  .footer__contenido {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 24px;
+  }
+
+  .footer__marca {
+    justify-self: center;
+    text-align: center;
+  }
+
+  .footer__corazon {
+    width: 30px;
+  }
+}
