@@ -1,8 +1,10 @@
 :root {
-  --color-beige: #ebdfd5;
-  --color-rojo: #e84545;
-  --color-verde: #015a37;
-  --color-coral: #ff8066;
-  --color-rosa: #ffc3bd;
-  --color-texto: #333333;
+  --color-beige: #f2ebdf;
+  --color-verde: #1e4d3b;
+  --color-coral: #d96b43;
+  --color-terracota: #c85a32;
+  --color-terracota-oscuro: #b24a28;
+  --color-texto: #1e4d3b;
+  --color-rojo: #a63824;
+  --color-rosa: #f2ebdf;
 }
