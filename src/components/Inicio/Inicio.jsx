@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import productos from './productos'
-import flores from '../../assets/elementos/flores.png'
+import tazita from '../../assets/elementos/tazita.png'
 import medialunaVerde from '../../assets/elementos/medialunaverde.png'
 import './Inicio.css'
 
@@ -76,10 +76,15 @@ function Inicio() {
   }
 
   return (
-    <section ref={seccionRef} id="inicio" className="inicio">
+    <section
+      ref={seccionRef}
+      id="inicio"
+      className="inicio"
+      aria-labelledby="inicio-titulo"
+    >
       <div className="inicio__contenido">
-        <h1 className="inicio__titulo">
-          Opciones saludables, clásicas & cafecitos
+        <h1 id="inicio-titulo" className="inicio__titulo">
+          El equilibrio perfecto entre lo clásico y lo saludable.
         </h1>
 
         {productos.map((producto) => {
@@ -126,7 +131,7 @@ function Inicio() {
               }}
               aria-label={producto.nombre}
               aria-expanded={activo}
-              aria-controls={`descripcion-${producto.id}`}
+              aria-controls={`inicio-descripcion-${producto.id}`}
               onPointerEnter={(evento) => {
                 if (evento.pointerType === 'mouse') {
                   setProductoHover(producto.id)
@@ -147,7 +152,7 @@ function Inicio() {
               <img src={producto.imagen} alt="" />
 
               <span
-                id={`descripcion-${producto.id}`}
+                id={`inicio-descripcion-${producto.id}`}
                 className="inicio__descripcion"
                 style={estiloDescripcion}
                 hidden={!activo}
@@ -159,19 +164,25 @@ function Inicio() {
         })}
       </div>
 
-      <button
-        type="button"
-        className="inicio__control"
-        aria-pressed={pausaManual}
-        onClick={() => setPausaManual((actual) => !actual)}
-      >
-        {pausaManual ? 'Reanudar movimiento' : 'Pausar movimiento'}
-      </button>
+      <div className="inicio__acciones">
+        <a href="#menu" className="inicio__enlace-menu">
+          Ver productos / Menú
+        </a>
+
+        <button
+          type="button"
+          className="inicio__control"
+          aria-pressed={pausaManual}
+          onClick={() => setPausaManual((actual) => !actual)}
+        >
+          {pausaManual ? 'Reanudar movimiento' : 'Pausar movimiento'}
+        </button>
+      </div>
 
       <img
-        src={flores}
+        src={tazita}
         alt=""
-        className="inicio__adorno inicio__adorno--flores"
+        className="inicio__adorno inicio__adorno--taza"
       />
 
       <img
