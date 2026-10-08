@@ -39,8 +39,7 @@
   color: var(--color-texto);
   font-size: 17px;
   line-height: 1.45;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  font-family: 'Quicksand', sans-serif;
 }
 
 .pedidos__presentacion .pedidos__destacado {
@@ -174,23 +173,29 @@
 }
 
 .pedidos__boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   align-self: center;
   min-height: 44px;
   margin-top: 8px;
   padding: 10px 28px;
   border: none;
   border-radius: 30px;
-  background-color: var(--color-coral);
+  background-color: var(--color-beige);
   color: var(--color-verde);
   font: inherit;
   font-size: 16px;
-  text-transform: uppercase;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .pedidos__boton:hover {
-  background-color: var(--color-rosa);
+  background-color: #ded3c3;
 }
 
 .pedidos__boton:focus-visible {
@@ -229,6 +234,75 @@
 
 .pedidos__resumen p:last-child {
   margin-bottom: 0;
+}
+
+
+.pedidos__ayuda {
+  margin: 2px 0 0;
+  color: var(--color-beige);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.pedidos__error {
+  margin: 4px 0 0;
+  padding: 8px 10px;
+  border-left: 3px solid var(--color-coral);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--color-beige);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.pedidos__campo [aria-invalid='true'] {
+  border: 2px solid var(--color-coral);
+}
+
+.pedidos__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.pedidos__resumen .pedidos__boton {
+  margin-top: 0;
+  background-color: var(--color-verde);
+  color: var(--color-beige);
+}
+
+.pedidos__resumen .pedidos__boton:hover {
+  background-color: #143829;
+}
+
+.pedidos__editar {
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid var(--color-verde);
+  border-radius: 30px;
+  background-color: transparent;
+  color: var(--color-verde);
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pedidos__editar:hover {
+  background-color: var(--color-verde);
+  color: var(--color-beige);
+}
+
+.pedidos__resumen:focus,
+.pedidos__resumen .pedidos__boton:focus-visible,
+.pedidos__editar:focus-visible {
+  outline: 3px solid var(--color-verde);
+  outline-offset: 4px;
 }
 
 @media (max-width: 800px) {
@@ -282,5 +356,18 @@
 
   .pedidos__resumen {
     padding: 20px;
+  }
+
+  .pedidos__acciones {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pedidos__acciones .pedidos__boton {
+    align-self: stretch;
+  }
+
+  .pedidos__editar {
+    width: 100%;
   }
 }
