@@ -1,0 +1,156 @@
+.menu {
+  padding: 72px 24px;
+  background-color: var(--color-beige);
+  scroll-margin-top: 24px;
+}
+
+.menu__marco {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 52px 32px;
+  border: 2px solid var(--color-verde);
+  border-radius: 40px;
+}
+
+.menu__titulo {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: max-content;
+  max-width: calc(100% - 40px);
+  margin: 0;
+  padding: 0 12px;
+  transform: translate(-50%, -50%);
+  background: var(--color-beige);
+  color: var(--color-verde);
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 500;
+  text-align: center;
+}
+
+.menu__introduccion,
+.menu__ayuda,
+.menu__consulta {
+  margin: 0 auto;
+  color: var(--color-verde);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.menu__introduccion {
+  max-width: 620px;
+  font-size: 18px;
+}
+
+.menu__ayuda {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.menu__categoria {
+  margin-top: 32px;
+}
+
+.menu__categoria-titulo {
+  display: table;
+  margin: 0 auto 24px;
+  padding: 5px 14px;
+  border-radius: 5px;
+  background: var(--color-verde);
+  color: var(--color-beige);
+  font-size: 19px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.menu__fila {
+  position: relative;
+}
+
+.menu__productos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.menu__ampliar {
+  position: absolute;
+  top: 100px;
+  right: -44px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-verde);
+  color: var(--color-beige);
+  font: inherit;
+  font-size: 27px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.menu__ampliar:hover {
+  background: var(--color-texto);
+}
+
+.menu__ampliar:focus-visible,
+.menu__consulta a:focus-visible {
+  outline: 3px solid var(--color-verde);
+  outline-offset: 4px;
+}
+
+.menu__consulta {
+  margin-top: 36px;
+  font-size: 16px;
+}
+
+.menu__consulta a {
+  color: var(--color-verde);
+  font-weight: 600;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 800px) {
+  .menu__marco {
+    padding: 42px 24px 28px;
+  }
+
+  .menu__productos {
+    gap: 16px;
+  }
+
+  .menu__ampliar {
+    position: static;
+    margin: 20px auto 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .menu {
+    padding: 54px 16px;
+  }
+
+  .menu__marco {
+    padding: 36px 16px 24px;
+    border-radius: 26px;
+  }
+
+  .menu__productos {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+    margin: 0 auto;
+    gap: 24px;
+  }
+
+  .menu__introduccion {
+    font-size: 16px;
+  }
+
+  .menu__categoria-titulo {
+    font-size: 17px;
+  }
+}
