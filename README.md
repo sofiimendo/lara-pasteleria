@@ -8,6 +8,12 @@ El proyecto tiene como objetivo crear un espacio digital atractivo, intuitivo y 
 
 La aplicación fue desarrollada como proyecto de Frontend con React, utilizando componentes reutilizables, organización modular y control de versiones colaborativo.
 
+### 🌐 Sitio web
+
+**[🌸 Visitar Lara Pastelería](https://lara-pasteleria.vercel.app/)**
+
+**[💻 Repositorio en GitHub](https://github.com/sofiimendo/lara-pasteleria)**
+
 ---
 
 ## ✨ Funcionalidades
@@ -61,6 +67,7 @@ La aplicación fue desarrollada como proyecto de Frontend con React, utilizando 
 | pnpm | Gestión de paquetes y dependencias |
 | Git | Control de versiones |
 | GitHub | Repositorio y trabajo colaborativo |
+| Vercel | Despliegue y alojamiento del frontend |
 
 ---
 
@@ -68,7 +75,10 @@ La aplicación fue desarrollada como proyecto de Frontend con React, utilizando 
 
 ```text
 lara-pasteleria/
+├── docs/
+│   └── disenio-original.png
 ├── public/
+│   └── favicon.svg
 ├── src/
 │   ├── assets/
 │   │   ├── elementos/
@@ -89,11 +99,19 @@ lara-pasteleria/
 │   │   ├── catalogoLara.js
 │   │   ├── productosMenu.js
 │   │   └── configuracion.js
+│   ├── store/
+│   ├── styles/
+│   ├── App.css
 │   ├── App.jsx
+│   ├── index.css
 │   └── main.jsx
+├── .gitignore
+├── eslint.config.js
 ├── index.html
 ├── package.json
-└── README.md
+├── pnpm-lock.yaml
+├── README.md
+└── vite.config.js
 ```
 
 ### Organización del código
@@ -101,6 +119,8 @@ lara-pasteleria/
 - `components/`: componentes reutilizables de la interfaz.
 - `assets/`: imágenes, ilustraciones y recursos gráficos.
 - `data/`: información del catálogo, productos y configuración.
+- `docs/`: documentación y diseño visual de referencia.
+- `public/`: archivos públicos, como el favicon.
 - `App.jsx`: integración de las secciones principales.
 - `main.jsx`: punto de entrada de la aplicación.
 
@@ -113,7 +133,7 @@ lara-pasteleria/
 Para ejecutar el proyecto es necesario contar con:
 
 - Node.js instalado.
-- pnpm instalado.
+- pnpm instalado o disponible mediante Corepack.
 - Git.
 
 ### 1. Clonar el repositorio
@@ -151,6 +171,12 @@ http://localhost:5173/
 ```
 
 Si ese puerto está ocupado, Vite utilizará otro disponible.
+
+**Nota:** si pnpm se administra mediante Corepack, también se pueden ejecutar los comandos utilizando `corepack pnpm`, por ejemplo:
+
+```bash
+corepack pnpm dev
+```
 
 ---
 
@@ -264,22 +290,35 @@ Se utilizaron:
 - Incorporación de Ubicación y Footer.
 - Reorganización de `App.jsx`.
 - Verificación de la compilación de producción.
+- Actualización del favicon.
+- Incorporación del diseño original como documentación.
+- Publicación del frontend en Vercel.
 
 ---
 
 ## 🌐 Deploy
 
-El proyecto está preparado para generar una compilación de producción con Vite utilizando:
+La landing page de **Lara Pastelería** se encuentra publicada en **Vercel**, utilizando una compilación de producción realizada con Vite.
+
+### 🚀 Sitio web
+
+**[🌸 Visitar Lara Pastelería](https://lara-pasteleria.vercel.app/)**
+
+El proyecto está conectado al repositorio de GitHub y utiliza la rama `main` para su despliegue de producción.
+
+Para generar la compilación localmente:
 
 ```bash
 pnpm build
 ```
 
-La publicación del sitio está prevista en **Hostinger**.
+La compilación genera la carpeta `dist/`, que contiene los archivos optimizados para su publicación.
 
-Una vez realizado el despliegue, se podrá incorporar aquí la URL pública de Lara Pastelería.
+**Estado actual:** Frontend publicado y disponible online.
 
-**Estado actual:** pendiente de despliegue público.
+La integración con el backend de Lara Stock se realizará en una etapa posterior.
+
+Para la publicación definitiva del sistema completo, se evaluará Hostinger u otra infraestructura compatible con los requerimientos del backend y la base de datos.
 
 ---
 
@@ -318,11 +357,13 @@ Durante la implementación, realizamos modificaciones y mejoras para adaptar la 
 ## 👩‍💻 Desarrolladoras
 
 ### 🌸 Sofía Mendoza
+
 - GitHub: [@sofiimendo](https://github.com/sofiimendo)
 - Desarrollo frontend y trabajo colaborativo.
 - Desarrollo e implementación de componentes en React.
 
 ### 🎨 Yamila Valdez Aguilar
+
 - Diseño de la landing page.
 - Desarrollo e implementación de componentes en React.
 - Adaptación responsive y mejoras de la interfaz.
@@ -335,14 +376,17 @@ Proyecto desarrollado por **Sofía Mendoza y Yamila Valdez Aguilar** en el marco
 
 ## 📌 Estado del proyecto
 
-**Frontend integrado en `main`.**
+**Frontend finalizado, integrado en `main` y publicado en Vercel.**
 
 - Componentes principales implementados.
 - Diseño responsive incorporado.
 - Menú conectado con el catálogo de productos.
 - Compilación de producción verificada.
-- Despliegue público pendiente.
-- Integración con Lara Stock planificada.
+- Deploy realizado exitosamente en Vercel.
+- URL pública disponible para la entrega del TP Final.
+- Integración con Lara Stock planificada para la próxima etapa.
+
+**🌐 Sitio web:** https://lara-pasteleria.vercel.app/
 
 ---
 
