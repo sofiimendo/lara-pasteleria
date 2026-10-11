@@ -301,6 +301,20 @@ Estas funcionalidades forman parte de las próximas etapas del proyecto y no se 
 
 ---
 
+## 🎨 Diseño de referencia
+
+La landing page de **Lara Pastelería** fue desarrollada a partir de una propuesta visual inicial que sirvió como guía para su diseño y desarrollo.
+
+Durante la implementación, realizamos modificaciones y mejoras para adaptar la propuesta a una página funcional y responsive desarrollada con React.
+
+### Propuesta visual original
+
+![Diseño original de Lara Pastelería](docs/disenio-original.png)
+
+*Diseño utilizado como referencia para el desarrollo de la landing page.*
+
+---
+
 ## 👩‍💻 Desarrolladoras
 
 ### 🌸 Sofía Mendoza
