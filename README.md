@@ -303,12 +303,19 @@ Estas funcionalidades forman parte de las próximas etapas del proyecto y no se 
 
 ## 👩‍💻 Desarrolladoras
 
-**Sofía Mendoza**
+### 🌸 Sofía Mendoza
 - GitHub: [@sofiimendo](https://github.com/sofiimendo)
+- Desarrollo frontend y trabajo colaborativo.
+- Desarrollo e implementación de componentes en React.
 
-**Yamila Valdez Aguilar**
+### 🎨 Yamila Valdez Aguilar
+- Diseño de la landing page.
+- Desarrollo e implementación de componentes en React.
+- Adaptación responsive y mejoras de la interfaz.
 
-Proyecto desarrollado en el marco de la formación en Desarrollo Frontend con React.
+---
+
+Proyecto desarrollado por **Sofía Mendoza y Yamila Valdez Aguilar** en el marco de la formación en **Desarrollo Frontend con React**.
 
 ---
 
