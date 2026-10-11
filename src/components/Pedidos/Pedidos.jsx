@@ -1,13 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import usePedidoStore from '../../store/usePedidoStore'
 import { configuracion } from '../../data/configuracion'
-import estrella from '../../assets/elementos/estrellaPedidos.png'
+import medialuna from '../../assets/elementos/medialunaterracota.png'
+import taza from '../../assets/elementos/tazapedidos.png'
+import info from '../../assets/elementos/info.png'
 import './Pedidos.css'
 
 const opcionesPedido = [
-  'Torta', 'Desayuno', 'Panes', 'Mesa dulce',
-  'Comida saludable', 'Otro pedido',
+  'Torta',
+  'Medialunas',
+  'Desayuno',
+  'Panes',
+  'Mesa dulce',
+  'Comida saludable',
+  'Otro pedido',
 ]
+
+function requiereAnticipacion(pedido) {
+  return pedido === 'Torta' || pedido === 'Medialunas'
+}
 
 function fechaLocal(fecha) {
   return [
@@ -19,7 +30,11 @@ function fechaLocal(fecha) {
 
 function obtenerFechaMinima(pedido) {
   const fecha = new Date()
-  if (pedido === 'Torta') fecha.setDate(fecha.getDate() + 5)
+
+  if (requiereAnticipacion(pedido)) {
+    fecha.setDate(fecha.getDate() + 5)
+  }
+
   return fechaLocal(fecha)
 }
 
@@ -29,26 +44,51 @@ function mostrarFecha(fecha) {
 
 function MensajeError({ mensaje, id }) {
   if (!mensaje) return null
-  return <p id={id} className="pedidos__error" role="alert">{mensaje}</p>
+
+  return (
+    <p id={id} className="pedidos__error" role="alert">
+      {mensaje}
+    </p>
+  )
 }
 
 function Pedidos() {
   const datos = usePedidoStore((estado) => estado.datos)
-  const actualizarCampo = usePedidoStore((estado) => estado.actualizarCampo)
+  const actualizarCampo = usePedidoStore(
+    (estado) => estado.actualizarCampo
+  )
+
   const [mostrarResumen, setMostrarResumen] = useState(false)
   const [errores, setErrores] = useState({})
   const formularioRef = useRef(null)
   const resumenRef = useRef(null)
+
+  const cantidadPersonas =
+    Number.isSafeInteger(Number(datos.cantidadPersonas)) &&
+    Number(datos.cantidadPersonas) >= 1
+      ? Number(datos.cantidadPersonas)
+      : 1
+
   const fechaMinima = obtenerFechaMinima(datos.pedido)
 
   useEffect(() => {
-    if (mostrarResumen) resumenRef.current?.focus()
+    if (datos.cantidadPersonas === '' || datos.cantidadPersonas == null) {
+      actualizarCampo('cantidadPersonas', '1')
+    }
+  }, [datos.cantidadPersonas, actualizarCampo])
+
+  useEffect(() => {
+    if (mostrarResumen) {
+      resumenRef.current?.focus()
+    }
   }, [mostrarResumen])
 
   function manejarCambio(evento) {
     const { name, value } = evento.target
+
     actualizarCampo(name, value)
     setMostrarResumen(false)
+
     setErrores((actuales) => ({
       ...actuales,
       [name]: '',
@@ -57,11 +97,15 @@ function Pedidos() {
   }
 
   function cambiarCantidad(cambio) {
-    const numero = Number(datos.cantidadPersonas)
-    const cantidad = Number.isSafeInteger(numero) && numero > 0 ? numero : 0
-    actualizarCampo('cantidadPersonas', String(Math.max(1, cantidad + cambio)))
+    const nuevaCantidad = Math.max(1, cantidadPersonas + cambio)
+
+    actualizarCampo('cantidadPersonas', String(nuevaCantidad))
     setMostrarResumen(false)
-    setErrores((actuales) => ({ ...actuales, cantidadPersonas: '' }))
+
+    setErrores((actuales) => ({
+      ...actuales,
+      cantidadPersonas: '',
+    }))
   }
 
   function validarPedido() {
@@ -72,36 +116,60 @@ function Pedidos() {
     const fecha = new Date(`${datos.fecha}T12:00:00`)
 
     if (nombre.length < 2 || nombre.length > 80) {
-      nuevosErrores.nombre = 'Ingresá tu nombre: entre 2 y 80 caracteres.'
+      nuevosErrores.nombre =
+        'Ingresá tu nombre: entre 2 y 80 caracteres.'
     }
-    if (!/^\+?[0-9\s()-]+$/.test(telefono) || digitos.length < 8 || digitos.length > 15) {
-      nuevosErrores.whatsapp = 'Ingresá un WhatsApp válido, con código de área.'
+
+    if (
+      !/^\+?[0-9\s()-]+$/.test(telefono) ||
+      digitos.length < 8 ||
+      digitos.length > 15
+    ) {
+      nuevosErrores.whatsapp =
+        'Ingresá un WhatsApp válido, con código de área.'
     }
+
     if (!opcionesPedido.includes(datos.pedido)) {
       nuevosErrores.pedido = 'Seleccioná qué querés pedir.'
     }
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(datos.fecha) ||
-        Number.isNaN(fecha.getTime()) || fechaLocal(fecha) !== datos.fecha) {
+
+    if (
+      !/^\d{4}-\d{2}-\d{2}$/.test(datos.fecha) ||
+      Number.isNaN(fecha.getTime()) ||
+      fechaLocal(fecha) !== datos.fecha
+    ) {
       nuevosErrores.fecha = 'Seleccioná una fecha válida.'
     } else if (datos.fecha < obtenerFechaMinima(datos.pedido)) {
-      nuevosErrores.fecha = datos.pedido === 'Torta'
-        ? 'Las tortas requieren al menos 5 días de anticipación.'
+      nuevosErrores.fecha = requiereAnticipacion(datos.pedido)
+        ? 'Las tortas y medialunas requieren al menos 5 días de anticipación.'
         : 'La fecha no puede ser anterior a hoy.'
     }
-    if (datos.cantidadPersonas !== '' &&
-        (!Number.isSafeInteger(Number(datos.cantidadPersonas)) || Number(datos.cantidadPersonas) < 1)) {
-      nuevosErrores.cantidadPersonas = 'Ingresá una cantidad entera mayor a cero o dejá el campo vacío.'
+
+    if (
+      !Number.isSafeInteger(cantidadPersonas) ||
+      cantidadPersonas < 1
+    ) {
+      nuevosErrores.cantidadPersonas =
+        'Ingresá una cantidad válida de personas.'
     }
+
     if (datos.detalles.length > 1000) {
-      nuevosErrores.detalles = 'Los detalles pueden tener hasta 1000 caracteres.'
+      nuevosErrores.detalles =
+        'Los detalles pueden tener hasta 1000 caracteres.'
     }
 
     setErrores(nuevosErrores)
+
     const primerCampo = Object.keys(nuevosErrores)[0]
+
     if (primerCampo) {
-      formularioRef.current?.elements.namedItem(primerCampo)?.focus()
+      formularioRef.current?.elements
+        .namedItem(primerCampo)
+        ?.focus()
+
       return false
     }
+
     return true
   }
 
@@ -128,71 +196,214 @@ function Pedidos() {
     `Nombre: ${datos.nombre.trim()}`,
     `WhatsApp: ${datos.whatsapp.trim()}`,
     `Pedido: ${datos.pedido}`,
-    `Fecha: ${mostrarFecha(datos.fecha)}`,
+    `Fecha: ${datos.fecha ? mostrarFecha(datos.fecha) : ''}`,
     `Evento: ${datos.tipoEvento || 'Sin especificar'}`,
-    `Personas: ${datos.cantidadPersonas || 'Sin especificar'}`,
+    `Personas: ${cantidadPersonas}`,
     `Detalles: ${datos.detalles.trim() || 'Sin especificar'}`,
     '',
     '¿Podés confirmarme disponibilidad y presupuesto?',
   ].join('\n')
+
   const enlaceWhatsApp = `https://wa.me/${configuracion.whatsapp}?text=${encodeURIComponent(mensaje)}`
 
   return (
-    <section id="pedidos" className="pedidos" aria-labelledby="pedidos-titulo">
+    <section
+      id="pedidos"
+      className="pedidos"
+      aria-labelledby="pedidos-titulo"
+    >
       <div className="pedidos__contenido">
         <div className="pedidos__presentacion">
-          <img src={estrella} alt="" className="pedidos__estrella" />
+          <img
+            src={medialuna}
+            alt=""
+            className="pedidos__medialuna"
+          />
+
           <h2 id="pedidos-titulo">Eventos & encargos</h2>
-          <p>Tortas, desayunos, panes, mesas dulces y opciones saludables para compartir.</p>
-          <p className="pedidos__destacado">Las tortas se piden con un mínimo de 5 días de anticipación.</p>
-          <p>Para comida saludable podés consultar sin ese mínimo. Lara te confirmará la disponibilidad y el tiempo de preparación de cada pedido.</p>
-          <p>Contanos qué necesitás, revisá el resumen y continuá por WhatsApp para coordinar con Lara.</p>
-          <p>Los pedidos se retiran en el local. La reserva se confirma con Lara y una seña del 50 %.</p>
+
+          <h3 className="pedidos__subtitulo">
+            Lara Pastelería
+            <span>te acompaña en tus eventos!</span>
+          </h3>
+
+          <p>
+            ¿Tenés un evento especial? En Lara preparamos tortas,
+            desayunos, panes, mesas dulces y opciones saludables
+            para compartir.
+          </p>
+
+          <p className="pedidos__destacado">
+            Las tortas y medialunas se piden con un mínimo de
+            5 días de anticipación.
+          </p>
+
+          <p>
+            Para comida saludable podés consultar sin ese mínimo.
+            Lara te confirmará la disponibilidad y el tiempo de
+            preparación de cada pedido.
+          </p>
+
+          <p>
+            Contanos qué necesitás, revisá el resumen y continuá
+            por WhatsApp para coordinar con Lara.
+          </p>
+
+          <p className="pedidos__destacado">
+            Queremos ser parte de tus momentos y darte lo mejor
+            en cada ocasión.
+          </p>
+
+          <img
+            src={taza}
+            alt=""
+            className="pedidos__taza"
+          />
         </div>
 
         <div className="pedidos__columna">
-          <form ref={formularioRef} className="pedidos__formulario" onSubmit={revisarPedido} noValidate aria-labelledby="pedido-formulario-titulo">
-            <h3 id="pedido-formulario-titulo">¡Hacé tu pedido!</h3>
+          <form
+            ref={formularioRef}
+            className="pedidos__formulario"
+            onSubmit={revisarPedido}
+            noValidate
+            aria-labelledby="pedido-formulario-titulo"
+          >
+            <h3 id="pedido-formulario-titulo">
+              ¡Hacé tu pedido!
+            </h3>
 
             <div className="pedidos__campo">
-              <label htmlFor="pedido-nombre">Nombre <span>*</span></label>
-              <input id="pedido-nombre" name="nombre" type="text" autoComplete="name" required minLength={2} maxLength={80}
-                value={datos.nombre} onChange={manejarCambio} aria-invalid={Boolean(errores.nombre)}
-                aria-describedby={errores.nombre ? 'error-nombre' : undefined} />
-              <MensajeError id="error-nombre" mensaje={errores.nombre} />
+              <label htmlFor="pedido-nombre">
+                Nombre <span>*</span>
+              </label>
+
+              <input
+                id="pedido-nombre"
+                name="nombre"
+                type="text"
+                autoComplete="name"
+                required
+                minLength={2}
+                maxLength={80}
+                placeholder="Ingresá tu nombre"
+                value={datos.nombre}
+                onChange={manejarCambio}
+                aria-invalid={Boolean(errores.nombre)}
+                aria-describedby={
+                  errores.nombre ? 'error-nombre' : undefined
+                }
+              />
+
+              <MensajeError
+                id="error-nombre"
+                mensaje={errores.nombre}
+              />
             </div>
 
             <div className="pedidos__campo">
-              <label htmlFor="pedido-whatsapp">WhatsApp <span>*</span></label>
-              <input id="pedido-whatsapp" name="whatsapp" type="tel" autoComplete="tel" required maxLength={25} placeholder="Ej.: 11 1234 5678"
-                value={datos.whatsapp} onChange={manejarCambio} aria-invalid={Boolean(errores.whatsapp)}
-                aria-describedby={errores.whatsapp ? 'error-whatsapp' : undefined} />
-              <MensajeError id="error-whatsapp" mensaje={errores.whatsapp} />
+              <label htmlFor="pedido-whatsapp">
+                WhatsApp <span>*</span>
+              </label>
+
+              <input
+                id="pedido-whatsapp"
+                name="whatsapp"
+                type="tel"
+                autoComplete="tel"
+                required
+                maxLength={25}
+                placeholder="Ej.: 11 1234 5678"
+                value={datos.whatsapp}
+                onChange={manejarCambio}
+                aria-invalid={Boolean(errores.whatsapp)}
+                aria-describedby={
+                  errores.whatsapp ? 'error-whatsapp' : undefined
+                }
+              />
+
+              <MensajeError
+                id="error-whatsapp"
+                mensaje={errores.whatsapp}
+              />
             </div>
 
             <div className="pedidos__campo">
-              <label htmlFor="pedido-producto">¿Qué querés pedir? <span>*</span></label>
-              <select id="pedido-producto" name="pedido" required value={datos.pedido} onChange={manejarCambio}
-                aria-invalid={Boolean(errores.pedido)} aria-describedby={errores.pedido ? 'error-pedido' : undefined}>
+              <label htmlFor="pedido-producto">
+                ¿Qué querés pedir? <span>*</span>
+              </label>
+
+              <select
+                id="pedido-producto"
+                name="pedido"
+                required
+                value={datos.pedido}
+                onChange={manejarCambio}
+                aria-invalid={Boolean(errores.pedido)}
+                aria-describedby={
+                  errores.pedido ? 'error-pedido' : undefined
+                }
+              >
                 <option value="">Seleccioná una opción</option>
-                {opcionesPedido.map((opcion) => <option key={opcion} value={opcion}>{opcion}</option>)}
+
+                {opcionesPedido.map((opcion) => (
+                  <option key={opcion} value={opcion}>
+                    {opcion}
+                  </option>
+                ))}
               </select>
-              <MensajeError id="error-pedido" mensaje={errores.pedido} />
+
+              <MensajeError
+                id="error-pedido"
+                mensaje={errores.pedido}
+              />
             </div>
 
             <div className="pedidos__campo">
-              <label htmlFor="pedido-fecha">¿Para qué fecha? <span>*</span></label>
-              <input id="pedido-fecha" name="fecha" type="date" required min={fechaMinima} value={datos.fecha} onChange={manejarCambio}
-                aria-invalid={Boolean(errores.fecha)} aria-describedby={`pedido-anticipacion${errores.fecha ? ' error-fecha' : ''}`} />
-              <p id="pedido-anticipacion" className="pedidos__ayuda">
-                {datos.pedido === 'Torta' ? 'Elegí una fecha con al menos 5 días de anticipación.' : 'La fecha queda sujeta a disponibilidad y al tiempo de preparación que confirme Lara.'}
+              <label htmlFor="pedido-fecha">
+                ¿Para qué fecha? <span>*</span>
+              </label>
+
+              <input
+                id="pedido-fecha"
+                name="fecha"
+                type="date"
+                required
+                min={fechaMinima}
+                value={datos.fecha}
+                onChange={manejarCambio}
+                aria-invalid={Boolean(errores.fecha)}
+                aria-describedby={`pedido-anticipacion${
+                  errores.fecha ? ' error-fecha' : ''
+                }`}
+              />
+
+              <p
+                id="pedido-anticipacion"
+                className="pedidos__ayuda"
+              >
+                {requiereAnticipacion(datos.pedido)
+                  ? 'Elegí una fecha con al menos 5 días de anticipación.'
+                  : 'La fecha queda sujeta a disponibilidad y al tiempo de preparación que confirme Lara.'}
               </p>
-              <MensajeError id="error-fecha" mensaje={errores.fecha} />
+
+              <MensajeError
+                id="error-fecha"
+                mensaje={errores.fecha}
+              />
             </div>
 
             <div className="pedidos__campo">
-              <label htmlFor="pedido-evento">Tipo de evento (opcional)</label>
-              <select id="pedido-evento" name="tipoEvento" value={datos.tipoEvento} onChange={manejarCambio}>
+              <label htmlFor="pedido-evento">
+                Tipo de evento (opcional)
+              </label>
+
+              <select
+                id="pedido-evento"
+                name="tipoEvento"
+                value={datos.tipoEvento}
+                onChange={manejarCambio}
+              >
                 <option value="">Seleccioná una opción</option>
                 <option value="Cumpleaños">Cumpleaños</option>
                 <option value="Reunión">Reunión</option>
@@ -201,44 +412,165 @@ function Pedidos() {
             </div>
 
             <div className="pedidos__campo">
-              <label htmlFor="pedido-personas">Cantidad aproximada de personas (opcional)</label>
+              <label htmlFor="pedido-personas">
+                Cantidad aproximada de personas (opcional)
+              </label>
+
               <div className="pedidos__cantidad">
-                <button type="button" aria-label="Restar una persona" disabled={(Number(datos.cantidadPersonas) || 0) <= 1} onClick={() => cambiarCantidad(-1)}>−</button>
-                <input id="pedido-personas" name="cantidadPersonas" type="number" min="1" step="1" placeholder="—"
-                  value={datos.cantidadPersonas} onChange={manejarCambio} aria-invalid={Boolean(errores.cantidadPersonas)}
-                  aria-describedby={errores.cantidadPersonas ? 'error-personas' : undefined} />
-                <button type="button" aria-label="Sumar una persona" onClick={() => cambiarCantidad(1)}>+</button>
+                <button
+                  type="button"
+                  aria-label="Restar una persona"
+                  disabled={cantidadPersonas <= 1}
+                  onClick={() => cambiarCantidad(-1)}
+                >
+                  −
+                </button>
+
+                <input
+                  id="pedido-personas"
+                  name="cantidadPersonas"
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={cantidadPersonas}
+                  onChange={manejarCambio}
+                  aria-invalid={Boolean(errores.cantidadPersonas)}
+                  aria-describedby={
+                    errores.cantidadPersonas
+                      ? 'error-personas'
+                      : undefined
+                  }
+                />
+
+                <button
+                  type="button"
+                  aria-label="Sumar una persona"
+                  onClick={() => cambiarCantidad(1)}
+                >
+                  +
+                </button>
               </div>
-              <MensajeError id="error-personas" mensaje={errores.cantidadPersonas} />
+
+              <MensajeError
+                id="error-personas"
+                mensaje={errores.cantidadPersonas}
+              />
             </div>
 
             <div className="pedidos__campo">
-              <label htmlFor="pedido-detalles">Detalles del pedido (opcional)</label>
-              <textarea id="pedido-detalles" name="detalles" rows={4} maxLength={1000} placeholder="Contanos sabores, cantidades o cualquier detalle que quieras consultar."
-                value={datos.detalles} onChange={manejarCambio} aria-invalid={Boolean(errores.detalles)}
-                aria-describedby={errores.detalles ? 'error-detalles' : undefined} />
-              <MensajeError id="error-detalles" mensaje={errores.detalles} />
+              <label htmlFor="pedido-detalles">
+                Detalles del pedido (opcional)
+              </label>
+
+              <textarea
+                id="pedido-detalles"
+                name="detalles"
+                rows={3}
+                maxLength={1000}
+                placeholder="Contanos sabores, cantidades o cualquier detalle que quieras consultar."
+                value={datos.detalles}
+                onChange={manejarCambio}
+                aria-invalid={Boolean(errores.detalles)}
+                aria-describedby={
+                  errores.detalles ? 'error-detalles' : undefined
+                }
+              />
+
+              <MensajeError
+                id="error-detalles"
+                mensaje={errores.detalles}
+              />
             </div>
 
-            <button type="submit" className="pedidos__boton">Revisar consulta →</button>
+            <button
+  type="submit"
+  className="pedidos__boton"
+>
+  Continuar con mi pedido →
+</button>
           </form>
 
-          <p className="pedidos__aclaracion">Completar este formulario no confirma una reserva. Lara te responderá por WhatsApp para coordinar disponibilidad, presupuesto y seña.</p>
+          <div className="pedidos__aclaracion">
+            <img
+              src={info}
+              alt=""
+              className="pedidos__info-imagen"
+            />
+
+            <p>
+              Completar este formulario no confirma una reserva.
+              Lara te responderá por WhatsApp para coordinar
+              disponibilidad, presupuesto y seña del 50 %.
+              Los pedidos se retiran en el local.
+            </p>
+          </div>
 
           {mostrarResumen && (
-            <div ref={resumenRef} className="pedidos__resumen" tabIndex={-1} role="region" aria-labelledby="pedido-resumen-titulo">
-              <h3 id="pedido-resumen-titulo">Revisá tu consulta</h3>
-              <p><strong>Nombre:</strong> {datos.nombre.trim()}</p>
-              <p><strong>WhatsApp:</strong> {datos.whatsapp.trim()}</p>
-              <p><strong>Pedido:</strong> {datos.pedido}</p>
-              <p><strong>Fecha:</strong> {mostrarFecha(datos.fecha)}</p>
-              <p><strong>Evento:</strong> {datos.tipoEvento || 'Sin especificar'}</p>
-              <p><strong>Personas:</strong> {datos.cantidadPersonas || 'Sin especificar'}</p>
-              {datos.detalles.trim() && <p><strong>Detalles:</strong> {datos.detalles.trim()}</p>}
-              <p>La consulta todavía no fue enviada. Abrí WhatsApp y tocá Enviar para que Lara la reciba.</p>
+            <div
+              ref={resumenRef}
+              className="pedidos__resumen"
+              tabIndex={-1}
+              role="region"
+              aria-labelledby="pedido-resumen-titulo"
+            >
+              <h3 id="pedido-resumen-titulo">
+                Revisá tu consulta
+              </h3>
+
+              <p>
+                <strong>Nombre:</strong> {datos.nombre.trim()}
+              </p>
+
+              <p>
+                <strong>WhatsApp:</strong> {datos.whatsapp.trim()}
+              </p>
+
+              <p>
+                <strong>Pedido:</strong> {datos.pedido}
+              </p>
+
+              <p>
+                <strong>Fecha:</strong> {mostrarFecha(datos.fecha)}
+              </p>
+
+              <p>
+                <strong>Evento:</strong>{' '}
+                {datos.tipoEvento || 'Sin especificar'}
+              </p>
+
+              <p>
+                <strong>Personas:</strong> {cantidadPersonas}
+              </p>
+
+              {datos.detalles.trim() && (
+                <p>
+                  <strong>Detalles:</strong> {datos.detalles.trim()}
+                </p>
+              )}
+
+              <p>
+                La consulta todavía no fue enviada. Abrí
+                WhatsApp y tocá Enviar para que Lara la reciba.
+              </p>
+
               <div className="pedidos__acciones">
-                <a className="pedidos__boton" href={enlaceWhatsApp} target="_blank" rel="noopener noreferrer" onClick={comprobarAntesDeAbrir}>Continuar en WhatsApp ↗</a>
-                <button type="button" className="pedidos__editar" onClick={editarConsulta}>Editar consulta</button>
+                <a
+                  className="pedidos__boton"
+                  href={enlaceWhatsApp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={comprobarAntesDeAbrir}
+                >
+                  Continuar en WhatsApp ↗
+                </a>
+
+                <button
+                  type="button"
+                  className="pedidos__editar"
+                  onClick={editarConsulta}
+                >
+                  Editar consulta
+                </button>
               </div>
             </div>
           )}
