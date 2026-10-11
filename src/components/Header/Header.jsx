@@ -1,7 +1,5 @@
 import { useRef, useState } from 'react'
 import logoLara from '../../assets/logo-lara-transparente.png'
-import flores from '../../assets/elementos/flores.png'
-import tazita from '../../assets/elementos/tazita.png'
 import './Header.css'
 
 function Header() {
@@ -59,30 +57,12 @@ function Header() {
             INICIO
           </a>
 
-          <a
-            href="#menu"
-            className="header__sobre-mi"
-            onClick={cerrarMenu}
-          >
+          <a href="#menu" onClick={cerrarMenu}>
             MENÚ & PRODUCTOS
-            <img
-              src={flores}
-              alt=""
-              className="header__adorno header__adorno--flores"
-            />
           </a>
 
-          <a
-            href="#pedidos"
-            className="header__pedidos"
-            onClick={cerrarMenu}
-          >
+          <a href="#pedidos" onClick={cerrarMenu}>
             EVENTOS & ENCARGOS
-            <img
-              src={tazita}
-              alt=""
-              className="header__adorno header__adorno--taza"
-            />
           </a>
 
           <a href="#ubicacion" onClick={cerrarMenu}>
