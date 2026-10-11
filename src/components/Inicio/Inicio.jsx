@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import productos from './productos'
 import tazita from '../../assets/elementos/tazita.png'
 import medialunaVerde from '../../assets/elementos/medialunaverde.png'
+import ovaloMobile from '../../assets/elementos/mobileOvalo.svg'
 import './Inicio.css'
 
 function Inicio() {
@@ -12,6 +13,17 @@ function Inicio() {
   const [productoFoco, setProductoFoco] = useState(null)
   const [productoSeleccionado, setProductoSeleccionado] = useState(null)
   const [pausaManual, setPausaManual] = useState(false)
+  const [indiceMobile, setIndiceMobile] = useState(0)
+
+  const [esMobile, setEsMobile] = useState(
+    () => window.matchMedia('(max-width: 600px)').matches
+  )
+
+  const [movimientoReducido, setMovimientoReducido] = useState(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
+
+  const productoActual = productos[indiceMobile]
 
   const pausada =
     pausaManual ||
@@ -28,21 +40,59 @@ function Inicio() {
 
     if (
       seccionRef.current?.contains(elementoActivo) &&
-      elementoActivo?.matches('.inicio__producto')
+      elementoActivo?.matches('.inicio__producto, .inicio__mobile-producto')
     ) {
       elementoActivo.blur()
     }
   }
 
+  function cambiarProducto(direccion) {
+    cerrarDescripcion()
+
+    setIndiceMobile((actual) =>
+      (actual + direccion + productos.length) % productos.length
+    )
+  }
+
+  useEffect(() => {
+    const consultaMobile = window.matchMedia('(max-width: 600px)')
+    const consultaMovimiento = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    )
+
+    function actualizarMobile(evento) {
+      setEsMobile(evento.matches)
+      setProductoSeleccionado(null)
+      setProductoHover(null)
+      setProductoFoco(null)
+    }
+
+    function actualizarMovimiento(evento) {
+      setMovimientoReducido(evento.matches)
+    }
+
+    consultaMobile.addEventListener('change', actualizarMobile)
+    consultaMovimiento.addEventListener('change', actualizarMovimiento)
+
+    return () => {
+      consultaMobile.removeEventListener('change', actualizarMobile)
+      consultaMovimiento.removeEventListener('change', actualizarMovimiento)
+    }
+  }, [])
+
   useEffect(() => {
     function manejarToqueFuera(evento) {
-      const producto = evento.target.closest?.('.inicio__producto')
+      const producto = evento.target.closest?.(
+        '.inicio__producto, .inicio__mobile-producto'
+      )
 
       if (producto && seccionRef.current?.contains(producto)) {
         return
       }
 
-      cerrarDescripcion()
+      setProductoSeleccionado(null)
+      setProductoHover(null)
+      setProductoFoco(null)
     }
 
     document.addEventListener('pointerdown', manejarToqueFuera)
@@ -53,18 +103,22 @@ function Inicio() {
   }, [])
 
   useEffect(() => {
-    const preferencia = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    )
+    if (pausada || movimientoReducido || productos.length === 0) return
 
-    if (pausada || preferencia.matches) return
+    if (esMobile) {
+      const intervalo = setInterval(() => {
+        setIndiceMobile((actual) => (actual + 1) % productos.length)
+      }, 4000)
+
+      return () => clearInterval(intervalo)
+    }
 
     const intervalo = setInterval(() => {
       setAngulo((actual) => (actual + 0.2) % 360)
     }, 40)
 
     return () => clearInterval(intervalo)
-  }, [pausada])
+  }, [pausada, esMobile, movimientoReducido])
 
   function seleccionarProducto(id, boton) {
     if (productoSeleccionado === id) {
@@ -162,6 +216,96 @@ function Inicio() {
             </button>
           )
         })}
+      </div>
+
+      <div className="inicio__mobile">
+        <div className="inicio__mobile-escenario">
+          <img
+            src={ovaloMobile}
+            alt=""
+            className="inicio__mobile-ovalo"
+            aria-hidden="true"
+          />
+
+          <button
+            type="button"
+            className="inicio__mobile-producto"
+            aria-label={`Conocer ${productoActual.nombre}`}
+            aria-expanded={productoSeleccionado === productoActual.id}
+            aria-controls="inicio-mobile-descripcion"
+            onClick={(evento) => {
+              seleccionarProducto(productoActual.id, evento.currentTarget)
+            }}
+            onKeyDown={(evento) => {
+              if (evento.key === 'Escape') {
+                cerrarDescripcion()
+              }
+            }}
+          >
+            <img
+              key={productoActual.id}
+              src={productoActual.imagen}
+              alt=""
+              className="inicio__mobile-imagen"
+            />
+          </button>
+        </div>
+
+        <p className="inicio__mobile-nombre">
+          {productoActual.nombre}
+        </p>
+
+        <p
+          id="inicio-mobile-descripcion"
+          className="inicio__mobile-descripcion"
+          hidden={productoSeleccionado !== productoActual.id}
+        >
+          {productoActual.descripcion}
+        </p>
+
+        <div className="inicio__mobile-navegacion">
+          <button
+            type="button"
+            className="inicio__mobile-flecha"
+            onClick={() => cambiarProducto(-1)}
+            aria-label="Ver producto anterior"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="m15 18-6-6 6-6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+
+          <span className="inicio__mobile-contador">
+            {indiceMobile + 1} / {productos.length}
+          </span>
+
+          <button
+            type="button"
+            className="inicio__mobile-flecha"
+            onClick={() => cambiarProducto(1)}
+            aria-label="Ver producto siguiente"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="m9 18 6-6-6-6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <p className="inicio__mobile-ayuda">
+          Tocá el producto para conocerlo
+        </p>
       </div>
 
       <div className="inicio__acciones">
