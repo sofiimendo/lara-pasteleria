@@ -1,0 +1,180 @@
+.admin-pedidos {
+  width: 100%;
+  color: #1e4d3c;
+}
+
+.admin-pedidos-heading {
+  margin-bottom: 24px;
+}
+
+.admin-pedidos-heading h1 {
+  margin: 0 0 5px;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.admin-pedidos-heading p {
+  margin: 0;
+  color: #777;
+  font-size: 16px;
+}
+
+.admin-pedidos-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.admin-pedidos-toolbar input,
+.admin-pedidos-toolbar select {
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid #1e4d3c;
+  border-radius: 10px;
+  background: transparent;
+  color: #555;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.admin-pedidos-toolbar input {
+  width: 340px;
+  max-width: 100%;
+}
+
+.admin-pedidos-toolbar select {
+  min-width: 165px;
+  cursor: pointer;
+}
+
+.admin-pedidos-toolbar input:focus,
+.admin-pedidos-toolbar select:focus {
+  outline: 2px solid #dc6943;
+  outline-offset: 2px;
+}
+
+.admin-pedidos-add {
+  min-height: 46px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #1e4d3c;
+  color: white;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-pedidos-add:hover {
+  background: #2b6952;
+}
+
+.admin-pedidos-table-wrapper {
+  width: 100%;
+  padding: 25px 30px;
+  overflow-x: auto;
+  border-radius: 25px;
+  background: #fffaf6;
+}
+
+.admin-pedidos-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  color: #555;
+  font-size: 14px;
+}
+
+.admin-pedidos-table th {
+  padding: 15px 12px;
+  border-bottom: 1px solid #7b9b8c;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.admin-pedidos-table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #b5c6bc;
+}
+
+.admin-pedidos-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-pedidos-empty {
+  padding: 65px 15px !important;
+  color: #888;
+  text-align: center;
+}
+
+.admin-pedidos-status {
+  display: inline-block;
+  min-width: 95px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.admin-pedidos-status.nuevo {
+  background: #f9dcd0;
+  color: #bf4e31;
+}
+
+.admin-pedidos-status.pendiente {
+  background: #ffe6ac;
+  color: #805521;
+}
+
+.admin-pedidos-status.confirmado {
+  background: #d7eadb;
+  color: #1e4d3c;
+}
+
+.admin-pedidos-actions button {
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: #f2eadf;
+  color: #dc6943;
+  cursor: pointer;
+}
+
+.admin-pedidos-actions button:hover {
+  background: #f4d5c6;
+}
+
+@media (max-width: 1100px) {
+  .admin-pedidos-toolbar {
+    justify-content: flex-start;
+  }
+
+  .admin-pedidos-table-wrapper {
+    padding: 15px;
+  }
+
+  .admin-pedidos-table {
+    min-width: 850px;
+  }
+}
+
+@media (max-width: 650px) {
+  .admin-pedidos-heading h1 {
+    font-size: 25px;
+  }
+
+  .admin-pedidos-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-pedidos-toolbar input,
+  .admin-pedidos-toolbar select,
+  .admin-pedidos-add {
+    width: 100%;
+  }
+}

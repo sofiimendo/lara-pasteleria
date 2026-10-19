@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import logoLara from '../../assets/logo-lara-transparente.png'
 import './Header.css'
 
@@ -68,6 +69,15 @@ function Header() {
           <a href="#ubicacion" onClick={cerrarMenu}>
             UBICACIÓN
           </a>
+
+          <Link
+            to="/login"
+            className="header__login"
+            onClick={cerrarMenu}
+          >
+            <span aria-hidden="true">♙</span>
+            LOGIN
+          </Link>
         </nav>
       </div>
     </header>

@@ -1,0 +1,132 @@
+.admin-login {
+  min-height: 100vh;
+  background: #f2eadf;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  font-family: "Quicksand", sans-serif;
+}
+
+.admin-login-card {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  min-height: 600px;
+  background: #f2eadf;
+  border: 2px solid #df7049;
+  border-radius: 80px 80px 0 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 65px 40px;
+}
+
+.admin-login-back {
+  position: absolute;
+  top: 30px;
+  left: 45px;
+  background: none;
+  border: none;
+  color: #20513e;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.admin-login-brand {
+  text-align: center;
+  color: #20513e;
+  margin-bottom: 15px;
+}
+
+.admin-login-brand-icon {
+  color: #df7049;
+  font-size: 32px;
+}
+
+.admin-login-brand h1 {
+  font-size: 25px;
+  margin: 5px 0;
+}
+
+.admin-login-brand p {
+  font-size: 13px;
+  color: #777;
+}
+
+.admin-login-card h2 {
+  color: #20513e;
+  font-size: 36px;
+  font-weight: 500;
+  margin: 15px 0 5px;
+}
+
+.admin-login-subtitle {
+  color: #777;
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.admin-login-card form {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-login-card label {
+  color: #20513e;
+  font-size: 15px;
+}
+
+.admin-login-card input {
+  padding: 15px 18px;
+  border: 2px solid #20513e;
+  border-radius: 12px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 15px;
+  outline-color: #df7049;
+}
+
+.admin-login-submit {
+  margin: 22px auto 0;
+  padding: 12px 45px;
+  background: #d65c35;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-login-submit:hover {
+  background: #b94a29;
+}
+
+.admin-login-footer {
+  color: #df7049;
+  font-size: 14px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .admin-login-card {
+    border-radius: 35px;
+    padding: 85px 22px 40px;
+  }
+
+  .admin-login-back {
+    top: 25px;
+    left: 25px;
+  }
+
+  .admin-login-card h2 {
+    font-size: 29px;
+  }
+}

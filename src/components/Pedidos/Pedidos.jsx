@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import usePedidoStore from '../../store/usePedidoStore'
-import { configuracion } from '../../data/configuracion'
 import medialuna from '../../assets/elementos/medialunaterracota.png'
 import taza from '../../assets/elementos/tazapedidos.png'
 import info from '../../assets/elementos/info.png'
@@ -16,10 +16,6 @@ const opcionesPedido = [
   'Otro pedido',
 ]
 
-function requiereAnticipacion(pedido) {
-  return pedido === 'Torta' || pedido === 'Medialunas'
-}
-
 function fechaLocal(fecha) {
   return [
     fecha.getFullYear(),
@@ -31,15 +27,11 @@ function fechaLocal(fecha) {
 function obtenerFechaMinima(pedido) {
   const fecha = new Date()
 
-  if (requiereAnticipacion(pedido)) {
+  if (pedido === 'Torta' || pedido === 'Medialunas') {
     fecha.setDate(fecha.getDate() + 5)
   }
 
   return fechaLocal(fecha)
-}
-
-function mostrarFecha(fecha) {
-  return fecha.split('-').reverse().join('/')
 }
 
 function MensajeError({ mensaje, id }) {
@@ -58,10 +50,8 @@ function Pedidos() {
     (estado) => estado.actualizarCampo
   )
 
-  const [mostrarResumen, setMostrarResumen] = useState(false)
   const [errores, setErrores] = useState({})
-  const formularioRef = useRef(null)
-  const resumenRef = useRef(null)
+  const [mensajeFormulario, setMensajeFormulario] = useState('')
 
   const cantidadPersonas =
     Number.isSafeInteger(Number(datos.cantidadPersonas)) &&
@@ -71,23 +61,11 @@ function Pedidos() {
 
   const fechaMinima = obtenerFechaMinima(datos.pedido)
 
-  useEffect(() => {
-    if (datos.cantidadPersonas === '' || datos.cantidadPersonas == null) {
-      actualizarCampo('cantidadPersonas', '1')
-    }
-  }, [datos.cantidadPersonas, actualizarCampo])
-
-  useEffect(() => {
-    if (mostrarResumen) {
-      resumenRef.current?.focus()
-    }
-  }, [mostrarResumen])
-
   function manejarCambio(evento) {
     const { name, value } = evento.target
 
     actualizarCampo(name, value)
-    setMostrarResumen(false)
+    setMensajeFormulario('')
 
     setErrores((actuales) => ({
       ...actuales,
@@ -100,7 +78,7 @@ function Pedidos() {
     const nuevaCantidad = Math.max(1, cantidadPersonas + cambio)
 
     actualizarCampo('cantidadPersonas', String(nuevaCantidad))
-    setMostrarResumen(false)
+    setMensajeFormulario('')
 
     setErrores((actuales) => ({
       ...actuales,
@@ -110,28 +88,29 @@ function Pedidos() {
 
   function validarPedido() {
     const nuevosErrores = {}
-    const nombre = datos.nombre.trim()
-    const telefono = datos.whatsapp.trim()
-    const digitos = telefono.replace(/\D/g, '')
-    const fecha = new Date(`${datos.fecha}T12:00:00`)
-
-    if (nombre.length < 2 || nombre.length > 80) {
-      nuevosErrores.nombre =
-        'Ingresá tu nombre: entre 2 y 80 caracteres.'
-    }
 
     if (
-      !/^\+?[0-9\s()-]+$/.test(telefono) ||
-      digitos.length < 8 ||
-      digitos.length > 15
+      datos.nombre.trim().length < 2 ||
+      datos.nombre.trim().length > 80
     ) {
-      nuevosErrores.whatsapp =
-        'Ingresá un WhatsApp válido, con código de área.'
+      nuevosErrores.nombre =
+        'Ingresá tu nombre y apellido (entre 2 y 80 caracteres).'
+    }
+
+    const email = datos.email.trim()
+
+    if (
+      email.length > 254 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    ) {
+      nuevosErrores.email = 'Ingresá un correo electrónico válido.'
     }
 
     if (!opcionesPedido.includes(datos.pedido)) {
       nuevosErrores.pedido = 'Seleccioná qué querés pedir.'
     }
+
+    const fecha = new Date(`${datos.fecha}T12:00:00`)
 
     if (
       !/^\d{4}-\d{2}-\d{2}$/.test(datos.fecha) ||
@@ -139,15 +118,16 @@ function Pedidos() {
       fechaLocal(fecha) !== datos.fecha
     ) {
       nuevosErrores.fecha = 'Seleccioná una fecha válida.'
-    } else if (datos.fecha < obtenerFechaMinima(datos.pedido)) {
-      nuevosErrores.fecha = requiereAnticipacion(datos.pedido)
-        ? 'Las tortas y medialunas requieren al menos 5 días de anticipación.'
-        : 'La fecha no puede ser anterior a hoy.'
+    } else if (datos.fecha < fechaMinima) {
+      nuevosErrores.fecha =
+        datos.pedido === 'Torta' || datos.pedido === 'Medialunas'
+          ? 'Las tortas y medialunas requieren al menos 5 días de anticipación.'
+          : 'La fecha no puede ser anterior a hoy.'
     }
 
     if (
-      !Number.isSafeInteger(cantidadPersonas) ||
-      cantidadPersonas < 1
+      !Number.isSafeInteger(Number(datos.cantidadPersonas)) ||
+      Number(datos.cantidadPersonas) < 1
     ) {
       nuevosErrores.cantidadPersonas =
         'Ingresá una cantidad válida de personas.'
@@ -160,51 +140,23 @@ function Pedidos() {
 
     setErrores(nuevosErrores)
 
-    const primerCampo = Object.keys(nuevosErrores)[0]
-
-    if (primerCampo) {
-      formularioRef.current?.elements
-        .namedItem(primerCampo)
-        ?.focus()
-
-      return false
-    }
-
-    return true
+    return Object.keys(nuevosErrores).length === 0
   }
 
-  function revisarPedido(evento) {
+  function enviarConsulta(evento) {
     evento.preventDefault()
-    setMostrarResumen(validarPedido())
-  }
 
-  function editarConsulta() {
-    setMostrarResumen(false)
-    formularioRef.current?.elements.namedItem('nombre')?.focus()
-  }
-
-  function comprobarAntesDeAbrir(evento) {
     if (!validarPedido()) {
-      evento.preventDefault()
-      setMostrarResumen(false)
+      setMensajeFormulario(
+        'Revisá los campos marcados antes de continuar.'
+      )
+      return
     }
+
+    setMensajeFormulario(
+      '¡Tu consulta está lista! Para enviarla, primero tenés que registrarte o iniciar sesión. Estamos preparando esa conexión.'
+    )
   }
-
-  const mensaje = [
-    '¡Hola Lara! Quiero consultar por un pedido.',
-    '',
-    `Nombre: ${datos.nombre.trim()}`,
-    `WhatsApp: ${datos.whatsapp.trim()}`,
-    `Pedido: ${datos.pedido}`,
-    `Fecha: ${datos.fecha ? mostrarFecha(datos.fecha) : ''}`,
-    `Evento: ${datos.tipoEvento || 'Sin especificar'}`,
-    `Personas: ${cantidadPersonas}`,
-    `Detalles: ${datos.detalles.trim() || 'Sin especificar'}`,
-    '',
-    '¿Podés confirmarme disponibilidad y presupuesto?',
-  ].join('\n')
-
-  const enlaceWhatsApp = `https://wa.me/${configuracion.whatsapp}?text=${encodeURIComponent(mensaje)}`
 
   return (
     <section
@@ -224,7 +176,7 @@ function Pedidos() {
 
           <h3 className="pedidos__subtitulo">
             Lara Pastelería
-            <span>te acompaña en tus eventos!</span>
+            <span>¡te acompaña en tus eventos!</span>
           </h3>
 
           <p>
@@ -245,8 +197,9 @@ function Pedidos() {
           </p>
 
           <p>
-            Contanos qué necesitás, revisá el resumen y continuá
-            por WhatsApp para coordinar con Lara.
+            Completá el formulario para contarnos qué necesitás.
+            Para enviar tu consulta, registrate o iniciá sesión
+            en Lara Pastelería.
           </p>
 
           <p className="pedidos__destacado">
@@ -263,9 +216,8 @@ function Pedidos() {
 
         <div className="pedidos__columna">
           <form
-            ref={formularioRef}
             className="pedidos__formulario"
-            onSubmit={revisarPedido}
+            onSubmit={enviarConsulta}
             noValidate
             aria-labelledby="pedido-formulario-titulo"
           >
@@ -275,7 +227,7 @@ function Pedidos() {
 
             <div className="pedidos__campo">
               <label htmlFor="pedido-nombre">
-                Nombre <span>*</span>
+                Nombre y apellido <span>*</span>
               </label>
 
               <input
@@ -286,13 +238,10 @@ function Pedidos() {
                 required
                 minLength={2}
                 maxLength={80}
-                placeholder="Ingresá tu nombre"
+                placeholder="Ingresá tu nombre y apellido"
                 value={datos.nombre}
                 onChange={manejarCambio}
                 aria-invalid={Boolean(errores.nombre)}
-                aria-describedby={
-                  errores.nombre ? 'error-nombre' : undefined
-                }
               />
 
               <MensajeError
@@ -302,66 +251,32 @@ function Pedidos() {
             </div>
 
             <div className="pedidos__campo">
-              <label htmlFor="pedido-whatsapp">
-                WhatsApp <span>*</span>
+              <label htmlFor="pedido-email">
+                Correo electrónico <span>*</span>
               </label>
 
               <input
-                id="pedido-whatsapp"
-                name="whatsapp"
-                type="tel"
-                autoComplete="tel"
+                id="pedido-email"
+                name="email"
+                type="email"
+                autoComplete="email"
                 required
-                maxLength={25}
-                placeholder="Ej.: 11 1234 5678"
-                value={datos.whatsapp}
+                maxLength={254}
+                placeholder="ejemplo@correo.com"
+                value={datos.email}
                 onChange={manejarCambio}
-                aria-invalid={Boolean(errores.whatsapp)}
-                aria-describedby={
-                  errores.whatsapp ? 'error-whatsapp' : undefined
-                }
+                aria-invalid={Boolean(errores.email)}
               />
 
               <MensajeError
-                id="error-whatsapp"
-                mensaje={errores.whatsapp}
-              />
-            </div>
-
-            <div className="pedidos__campo">
-              <label htmlFor="pedido-producto">
-                ¿Qué querés pedir? <span>*</span>
-              </label>
-
-              <select
-                id="pedido-producto"
-                name="pedido"
-                required
-                value={datos.pedido}
-                onChange={manejarCambio}
-                aria-invalid={Boolean(errores.pedido)}
-                aria-describedby={
-                  errores.pedido ? 'error-pedido' : undefined
-                }
-              >
-                <option value="">Seleccioná una opción</option>
-
-                {opcionesPedido.map((opcion) => (
-                  <option key={opcion} value={opcion}>
-                    {opcion}
-                  </option>
-                ))}
-              </select>
-
-              <MensajeError
-                id="error-pedido"
-                mensaje={errores.pedido}
+                id="error-email"
+                mensaje={errores.email}
               />
             </div>
 
             <div className="pedidos__campo">
               <label htmlFor="pedido-fecha">
-                ¿Para qué fecha? <span>*</span>
+                Fecha del evento o entrega <span>*</span>
               </label>
 
               <input
@@ -373,18 +288,13 @@ function Pedidos() {
                 value={datos.fecha}
                 onChange={manejarCambio}
                 aria-invalid={Boolean(errores.fecha)}
-                aria-describedby={`pedido-anticipacion${
-                  errores.fecha ? ' error-fecha' : ''
-                }`}
               />
 
-              <p
-                id="pedido-anticipacion"
-                className="pedidos__ayuda"
-              >
-                {requiereAnticipacion(datos.pedido)
+              <p className="pedidos__ayuda">
+                {datos.pedido === 'Torta' ||
+                datos.pedido === 'Medialunas'
                   ? 'Elegí una fecha con al menos 5 días de anticipación.'
-                  : 'La fecha queda sujeta a disponibilidad y al tiempo de preparación que confirme Lara.'}
+                  : 'La fecha queda sujeta a disponibilidad.'}
               </p>
 
               <MensajeError
@@ -412,6 +322,34 @@ function Pedidos() {
             </div>
 
             <div className="pedidos__campo">
+              <label htmlFor="pedido-producto">
+                ¿Qué querés pedir? <span>*</span>
+              </label>
+
+              <select
+                id="pedido-producto"
+                name="pedido"
+                required
+                value={datos.pedido}
+                onChange={manejarCambio}
+                aria-invalid={Boolean(errores.pedido)}
+              >
+                <option value="">Seleccioná una opción</option>
+
+                {opcionesPedido.map((opcion) => (
+                  <option key={opcion} value={opcion}>
+                    {opcion}
+                  </option>
+                ))}
+              </select>
+
+              <MensajeError
+                id="error-pedido"
+                mensaje={errores.pedido}
+              />
+            </div>
+
+            <div className="pedidos__campo">
               <label htmlFor="pedido-personas">
                 Cantidad aproximada de personas (opcional)
               </label>
@@ -432,14 +370,9 @@ function Pedidos() {
                   type="number"
                   min="1"
                   step="1"
-                  value={cantidadPersonas}
+                  value={datos.cantidadPersonas}
                   onChange={manejarCambio}
                   aria-invalid={Boolean(errores.cantidadPersonas)}
-                  aria-describedby={
-                    errores.cantidadPersonas
-                      ? 'error-personas'
-                      : undefined
-                  }
                 />
 
                 <button
@@ -467,13 +400,10 @@ function Pedidos() {
                 name="detalles"
                 rows={3}
                 maxLength={1000}
-                placeholder="Contanos sabores, cantidades o cualquier detalle que quieras consultar."
+                placeholder="Contanos sabores, cantidades o cualquier detalle de tu pedido."
                 value={datos.detalles}
                 onChange={manejarCambio}
                 aria-invalid={Boolean(errores.detalles)}
-                aria-describedby={
-                  errores.detalles ? 'error-detalles' : undefined
-                }
               />
 
               <MensajeError
@@ -483,11 +413,20 @@ function Pedidos() {
             </div>
 
             <button
-  type="submit"
-  className="pedidos__boton"
->
-  Continuar con mi pedido →
-</button>
+              type="submit"
+              className="pedidos__boton"
+            >
+              ENVIAR CONSULTA →
+            </button>
+
+            {mensajeFormulario && (
+              <p
+                className="pedidos__error"
+                role="status"
+              >
+                {mensajeFormulario}
+              </p>
+            )}
           </form>
 
           <div className="pedidos__aclaracion">
@@ -498,82 +437,14 @@ function Pedidos() {
             />
 
             <p>
-              Completar este formulario no confirma una reserva.
-              Lara te responderá por WhatsApp para coordinar
-              disponibilidad, presupuesto y seña del 50 %.
-              Los pedidos se retiran en el local.
+              Para enviar una consulta es necesario{' '}
+              <Link to="/registro">registrarse</Link> o{' '}
+              <Link to="/login">iniciar sesión</Link> en
+              Lara Pastelería. Completar el formulario no
+              confirma el pedido; Lara te informará
+              disponibilidad y presupuesto.
             </p>
           </div>
-
-          {mostrarResumen && (
-            <div
-              ref={resumenRef}
-              className="pedidos__resumen"
-              tabIndex={-1}
-              role="region"
-              aria-labelledby="pedido-resumen-titulo"
-            >
-              <h3 id="pedido-resumen-titulo">
-                Revisá tu consulta
-              </h3>
-
-              <p>
-                <strong>Nombre:</strong> {datos.nombre.trim()}
-              </p>
-
-              <p>
-                <strong>WhatsApp:</strong> {datos.whatsapp.trim()}
-              </p>
-
-              <p>
-                <strong>Pedido:</strong> {datos.pedido}
-              </p>
-
-              <p>
-                <strong>Fecha:</strong> {mostrarFecha(datos.fecha)}
-              </p>
-
-              <p>
-                <strong>Evento:</strong>{' '}
-                {datos.tipoEvento || 'Sin especificar'}
-              </p>
-
-              <p>
-                <strong>Personas:</strong> {cantidadPersonas}
-              </p>
-
-              {datos.detalles.trim() && (
-                <p>
-                  <strong>Detalles:</strong> {datos.detalles.trim()}
-                </p>
-              )}
-
-              <p>
-                La consulta todavía no fue enviada. Abrí
-                WhatsApp y tocá Enviar para que Lara la reciba.
-              </p>
-
-              <div className="pedidos__acciones">
-                <a
-                  className="pedidos__boton"
-                  href={enlaceWhatsApp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={comprobarAntesDeAbrir}
-                >
-                  Continuar en WhatsApp ↗
-                </a>
-
-                <button
-                  type="button"
-                  className="pedidos__editar"
-                  onClick={editarConsulta}
-                >
-                  Editar consulta
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </section>
