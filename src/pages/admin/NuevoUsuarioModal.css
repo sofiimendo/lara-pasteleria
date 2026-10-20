@@ -1,0 +1,226 @@
+.nuevo-usuario-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100dvh;
+  padding: 24px;
+  overflow-y: auto;
+  background-color: rgba(20, 44, 34, 0.5);
+}
+
+.nuevo-usuario-modal {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 680px;
+  max-height: calc(100dvh - 48px);
+  margin: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 30px;
+  border-radius: 24px;
+  background-color: #fffaf6;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+}
+
+.nuevo-usuario-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.nuevo-usuario-heading h2 {
+  margin: 0 0 6px;
+  color: #1e4d3c;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.nuevo-usuario-heading p {
+  margin: 0;
+  color: #888;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.nuevo-usuario-cerrar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background-color: #f7d8cb;
+  color: #bf4e31;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.nuevo-usuario-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.nuevo-usuario-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  color: #1e4d3c;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.nuevo-usuario-grid input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid #a8beb1;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #555;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.nuevo-usuario-grid input:focus {
+  outline: 2px solid #dc6943;
+  outline-offset: 2px;
+}
+
+.nuevo-usuario-ayuda {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #888;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.nuevo-usuario-error {
+  margin: 18px 0 0;
+  color: #bf4e31;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.nuevo-usuario-acciones {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.nuevo-usuario-cancelar,
+.nuevo-usuario-guardar {
+  min-height: 50px;
+  padding: 11px 22px;
+  border-radius: 11px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nuevo-usuario-cancelar {
+  border: 1px solid #1e4d3c;
+  background-color: transparent;
+  color: #1e4d3c;
+}
+
+.nuevo-usuario-cancelar:hover:not(:disabled) {
+  background-color: #eaf0e9;
+}
+
+.nuevo-usuario-guardar {
+  border: none;
+  background-color: #1e4d3c;
+  color: #fff;
+}
+
+.nuevo-usuario-guardar:hover:not(:disabled) {
+  background-color: #2b6952;
+}
+
+.nuevo-usuario-acciones button:disabled,
+.nuevo-usuario-cerrar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .nuevo-usuario-overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .nuevo-usuario-modal {
+    width: 100%;
+    max-width: none;
+    max-height: 100dvh;
+    min-height: 100dvh;
+    margin: 0;
+    padding: 24px 20px;
+    border-radius: 0;
+  }
+
+  .nuevo-usuario-heading h2 {
+    font-size: 25px;
+  }
+
+  .nuevo-usuario-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nuevo-usuario-ayuda {
+    grid-column: auto;
+  }
+
+  .nuevo-usuario-acciones {
+    flex-direction: column-reverse;
+  }
+
+  .nuevo-usuario-acciones button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .nuevo-usuario-modal {
+    padding: 20px 15px;
+  }
+}
+
+
+.nuevo-usuario-grid select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid #a8beb1;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #555;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.nuevo-usuario-grid select:focus {
+  outline: 2px solid #dc6943;
+  outline-offset: 2px;
+}
+
+.nuevo-usuario-estado-campo {
+  grid-column: 1 / -1;
+}
