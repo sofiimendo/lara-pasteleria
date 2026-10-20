@@ -6,6 +6,10 @@ import taza from '../../assets/elementos/tazapedidos.png'
 import info from '../../assets/elementos/info.png'
 import './Pedidos.css'
 
+const API_URL = (
+  import.meta.env.VITE_API_URL || 'http://localhost:4000'
+).trim().replace(/\/+$/, '')
+
 const opcionesPedido = [
   'Torta',
   'Medialunas',
@@ -149,6 +153,7 @@ function Pedidos() {
 
   async function enviarConsulta(evento) {
     evento.preventDefault()
+
     if (enviando) return
 
     setMensajeFormulario('')
@@ -172,25 +177,22 @@ function Pedidos() {
     setEnviando(true)
 
     try {
-      const respuesta = await fetch(
-        'http://localhost:4000/api/pedidos',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            nombre: datos.nombre.trim(),
-            email: datos.email.trim(),
-            fecha: datos.fecha,
-            tipoEvento: datos.tipoEvento,
-            pedido: datos.pedido,
-            cantidadPersonas,
-            detalles: datos.detalles.trim(),
-          }),
-        }
-      )
+      const respuesta = await fetch(`${API_URL}/api/pedidos`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          nombre: datos.nombre.trim(),
+          email: datos.email.trim(),
+          fecha: datos.fecha,
+          tipoEvento: datos.tipoEvento,
+          pedido: datos.pedido,
+          cantidadPersonas,
+          detalles: datos.detalles.trim(),
+        }),
+      })
 
       const resultado = await respuesta.json().catch(() => ({}))
 
@@ -223,7 +225,7 @@ function Pedidos() {
       )
     } catch {
       setMensajeFormulario(
-        'No pudimos conectar con Lara. Revisá que el servidor esté funcionando e intentá nuevamente.'
+        'No pudimos conectar con Lara. Intentá nuevamente en unos momentos.'
       )
     } finally {
       setEnviando(false)

@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Registro.css";
 
-const API_URL = "http://localhost:4000";
+const API_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:4000"
+).trim().replace(/\/+$/, "");
 
 export default function LoginCliente() {
   const navigate = useNavigate();
@@ -29,6 +31,9 @@ export default function LoginCliente() {
 
   async function iniciarSesion(evento) {
     evento.preventDefault();
+
+    if (cargando) return;
+
     setMensaje("");
     setCargando(true);
 
@@ -44,12 +49,13 @@ export default function LoginCliente() {
         }),
       });
 
-      const resultado = await respuesta.json();
+      const resultado = await respuesta.json().catch(() => ({}));
 
       if (!respuesta.ok) {
-        throw new Error(
+        setMensaje(
           resultado.message || "No pudimos iniciar sesión."
         );
+        return;
       }
 
       if (
@@ -57,21 +63,21 @@ export default function LoginCliente() {
         !resultado.token ||
         resultado.cliente?.rol !== "cliente"
       ) {
-        throw new Error("La respuesta del servidor no es válida.");
+        setMensaje("La respuesta del servidor no es válida.");
+        return;
       }
 
       sessionStorage.setItem("lara_cliente_token", resultado.token);
+
       sessionStorage.setItem(
         "lara_cliente",
         JSON.stringify(resultado.cliente)
       );
 
       navigate("/", { replace: true });
-    } catch (error) {
+    } catch {
       setMensaje(
-        error instanceof Error
-          ? error.message
-          : "Ocurrió un error al iniciar sesión."
+        "No pudimos conectar con el servidor. Intentá nuevamente en unos momentos."
       );
     } finally {
       setCargando(false);
@@ -98,6 +104,7 @@ export default function LoginCliente() {
           <label htmlFor="login-cliente-email">
             Correo electrónico
           </label>
+
           <input
             id="login-cliente-email"
             name="email"
@@ -107,6 +114,7 @@ export default function LoginCliente() {
             required
             maxLength={254}
             autoComplete="email"
+            disabled={cargando}
           />
 
           <label htmlFor="login-cliente-password">
@@ -122,6 +130,7 @@ export default function LoginCliente() {
               onChange={actualizarCampo}
               required
               autoComplete="current-password"
+              disabled={cargando}
             />
 
             <button
@@ -134,6 +143,7 @@ export default function LoginCliente() {
                   : "Mostrar contraseña"
               }
               aria-pressed={mostrarPassword}
+              disabled={cargando}
             >
               {mostrarPassword ? "🙈" : "👁️"}
             </button>

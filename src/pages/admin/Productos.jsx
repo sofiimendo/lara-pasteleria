@@ -8,7 +8,9 @@ import NuevoProductoModal from "./NuevoProductoModal";
 import EliminarProductoModal from "./EliminarProductoModal";
 import "./Productos.css";
 
-const API_URL = "http://localhost:4000";
+const API_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:4000"
+).trim().replace(/\/+$/, "");
 
 function Productos() {
   const [productos, setProductos] = useState([]);

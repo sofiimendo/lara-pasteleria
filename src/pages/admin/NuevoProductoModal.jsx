@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import "./NuevoProductoModal.css";
 
-const API_URL = "http://localhost:4000";
+const API_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:4000"
+).trim().replace(/\/+$/, "");
 
 const CATEGORIAS = [
   "Healthy / Fit",
@@ -47,13 +49,12 @@ function NuevoProductoModal({
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!archivoImagen) return;
-
-    const urlTemporal = URL.createObjectURL(archivoImagen);
-    setVistaPrevia(urlTemporal);
-
-    return () => URL.revokeObjectURL(urlTemporal);
-  }, [archivoImagen]);
+    return () => {
+      if (vistaPrevia.startsWith("blob:")) {
+        URL.revokeObjectURL(vistaPrevia);
+      }
+    };
+  }, [vistaPrevia]);
 
   function actualizarCampo(evento) {
     const { name, value } = evento.target;
@@ -88,7 +89,9 @@ function NuevoProductoModal({
     }
 
     setArchivoImagen(archivo);
+    setVistaPrevia(URL.createObjectURL(archivo));
     setError("");
+    evento.target.value = "";
   }
 
   function quitarImagen() {
@@ -134,6 +137,9 @@ function NuevoProductoModal({
 
   async function guardarProducto(evento) {
     evento.preventDefault();
+
+    if (guardando) return;
+
     setError("");
 
     const nombre = formulario.nombre.trim();
@@ -255,9 +261,7 @@ function NuevoProductoModal({
         <div className="nuevo-producto-heading">
           <div>
             <h2 id="nuevo-producto-titulo">
-              {esEdicion
-                ? "Editar producto"
-                : "Agregar producto"}
+              {esEdicion ? "Editar producto" : "Agregar producto"}
             </h2>
 
             <p>
@@ -338,8 +342,7 @@ function NuevoProductoModal({
                 onChange={(evento) =>
                   setFormulario((anterior) => ({
                     ...anterior,
-                    disponible:
-                      evento.target.value === "true",
+                    disponible: evento.target.value === "true",
                   }))
                 }
                 disabled={guardando}
