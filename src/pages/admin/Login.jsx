@@ -2,6 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
+const API_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:4000"
+).trim().replace(/\/+$/, "");
+
 function Login() {
   const navigate = useNavigate();
 
@@ -19,19 +23,16 @@ function Login() {
     setCargando(true);
 
     try {
-      const respuesta = await fetch(
-        "http://localhost:4000/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email.trim(),
-            password,
-          }),
-        }
-      );
+      const respuesta = await fetch(`${API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          password,
+        }),
+      });
 
       const resultado = await respuesta.json().catch(() => ({}));
 
@@ -54,10 +55,7 @@ function Login() {
         return;
       }
 
-      sessionStorage.setItem(
-        "lara_admin_token",
-        resultado.token
-      );
+      sessionStorage.setItem("lara_admin_token", resultado.token);
 
       sessionStorage.setItem(
         "lara_admin_usuario",
@@ -67,7 +65,7 @@ function Login() {
       navigate("/admin", { replace: true });
     } catch {
       setError(
-        "No pudimos conectar con el servidor. Verificá que el backend esté funcionando."
+        "No pudimos conectar con el servidor. Intentá nuevamente en unos momentos."
       );
     } finally {
       setCargando(false);
@@ -98,9 +96,7 @@ function Login() {
         </p>
 
         <form onSubmit={handleSubmit}>
-          <label htmlFor="admin-email">
-            Correo electrónico
-          </label>
+          <label htmlFor="admin-email">Correo electrónico</label>
 
           <input
             id="admin-email"
@@ -113,9 +109,7 @@ function Login() {
             disabled={cargando}
           />
 
-          <label htmlFor="admin-password">
-            Contraseña
-          </label>
+          <label htmlFor="admin-password">Contraseña</label>
 
           <input
             id="admin-password"
@@ -148,9 +142,7 @@ function Login() {
             type="submit"
             disabled={cargando}
           >
-            {cargando
-              ? "Iniciando sesión..."
-              : "Iniciar sesión"}
+            {cargando ? "Iniciando sesión..." : "Iniciar sesión"}
           </button>
         </form>
 

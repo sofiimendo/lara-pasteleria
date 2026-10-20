@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Registro.css";
 
-const API_URL = "http://localhost:4000";
+const API_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:4000"
+).trim().replace(/\/+$/, "");
 
 const datosIniciales = {
   nombre: "",
@@ -28,10 +30,14 @@ export default function Registro() {
     }));
 
     setMensaje("");
+    setExito(false);
   }
 
   async function registrar(evento) {
     evento.preventDefault();
+
+    if (cargando) return;
+
     setMensaje("");
     setExito(false);
 
@@ -60,12 +66,13 @@ export default function Registro() {
         }),
       });
 
-      const resultado = await respuesta.json();
+      const resultado = await respuesta.json().catch(() => ({}));
 
       if (!respuesta.ok) {
-        throw new Error(
+        setMensaje(
           resultado.message || "No pudimos crear tu cuenta."
         );
+        return;
       }
 
       setExito(true);
@@ -73,11 +80,9 @@ export default function Registro() {
       setDatos({ ...datosIniciales });
       setMostrarPassword(false);
       setMostrarConfirmacion(false);
-    } catch (error) {
+    } catch {
       setMensaje(
-        error instanceof Error
-          ? error.message
-          : "Ocurrió un error al registrarte."
+        "No pudimos conectar con el servidor. Intentá nuevamente en unos momentos."
       );
     } finally {
       setCargando(false);
@@ -99,6 +104,7 @@ export default function Registro() {
 
         <form className="registro__formulario" onSubmit={registrar}>
           <label htmlFor="registro-nombre">Nombre y apellido</label>
+
           <input
             id="registro-nombre"
             name="nombre"
@@ -108,9 +114,11 @@ export default function Registro() {
             required
             maxLength={100}
             autoComplete="name"
+            disabled={cargando}
           />
 
           <label htmlFor="registro-email">Correo electrónico</label>
+
           <input
             id="registro-email"
             name="email"
@@ -120,6 +128,7 @@ export default function Registro() {
             required
             maxLength={254}
             autoComplete="email"
+            disabled={cargando}
           />
 
           <label htmlFor="registro-password">Contraseña</label>
@@ -134,6 +143,7 @@ export default function Registro() {
               required
               minLength={12}
               autoComplete="new-password"
+              disabled={cargando}
             />
 
             <button
@@ -146,6 +156,7 @@ export default function Registro() {
                   : "Mostrar contraseña"
               }
               aria-pressed={mostrarPassword}
+              disabled={cargando}
             >
               {mostrarPassword ? "🙈" : "👁️"}
             </button>
@@ -169,6 +180,7 @@ export default function Registro() {
               required
               minLength={12}
               autoComplete="new-password"
+              disabled={cargando}
             />
 
             <button
@@ -181,6 +193,7 @@ export default function Registro() {
                   : "Mostrar confirmación de contraseña"
               }
               aria-pressed={mostrarConfirmacion}
+              disabled={cargando}
             >
               {mostrarConfirmacion ? "🙈" : "👁️"}
             </button>
