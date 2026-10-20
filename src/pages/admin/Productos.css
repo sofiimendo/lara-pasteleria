@@ -1,0 +1,567 @@
+.admin-productos {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  color: #1e4d3c;
+  transform: translateY(-85px);
+}
+
+/* ENCABEZADO */
+
+.admin-productos-heading {
+  margin-bottom: 30px;
+}
+
+.admin-productos-heading h1 {
+  margin: 0 0 7px;
+  color: #1e4d3c;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.admin-productos-heading p {
+  margin: 0;
+  color: #888;
+  font-size: 19px;
+  line-height: 1.5;
+}
+
+/* BARRA DE HERRAMIENTAS */
+
+.admin-productos-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 28px;
+}
+
+.admin-productos-search {
+  position: relative;
+  flex: 1 1 350px;
+  min-width: 230px;
+  max-width: 420px;
+}
+
+.admin-productos-search img {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  width: 23px;
+  height: 23px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.admin-productos-search input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 54px;
+  padding: 12px 16px 12px 50px;
+  border: 1px solid #1e4d3c;
+  border-radius: 11px;
+  background-color: #fffaf6;
+  color: #555;
+  font-family: inherit;
+  font-size: 17px;
+}
+
+.admin-productos-search input::placeholder {
+  color: #999;
+}
+
+.admin-productos-select {
+  position: relative;
+  flex: 0 0 215px;
+}
+
+.admin-productos-select select {
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 54px;
+  padding: 12px 44px 12px 18px;
+  border: 1px solid #a5a5a5;
+  border-radius: 11px;
+  background-color: #fffaf6;
+  color: #555;
+  font-family: inherit;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.admin-productos-select img {
+  position: absolute;
+  top: 50%;
+  right: 17px;
+  width: 17px;
+  height: 17px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.admin-productos-search input:focus,
+.admin-productos-select select:focus {
+  outline: 2px solid #dc6943;
+  outline-offset: 2px;
+}
+
+/* BOTÓN AGREGAR */
+
+.admin-productos-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  min-height: 54px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 11px;
+  background-color: #1e4d3c;
+  color: #fff;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.admin-productos-add img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.admin-productos-add:hover:not(:disabled) {
+  background-color: #2b6952;
+}
+
+.admin-productos-add:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* TABLA DE ESCRITORIO */
+
+.admin-productos-table-wrapper {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 22px 26px;
+  border-radius: 25px;
+  background-color: #fffaf6;
+}
+
+.admin-productos-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  text-align: left;
+  color: #777;
+  font-size: 17px;
+}
+
+/* DISTRIBUCIÓN DE COLUMNAS */
+
+.admin-productos-table th:nth-child(1),
+.admin-productos-table td:nth-child(1) {
+  width: 12%;
+}
+
+.admin-productos-table th:nth-child(2),
+.admin-productos-table td:nth-child(2) {
+  width: 24%;
+}
+
+.admin-productos-table th:nth-child(3),
+.admin-productos-table td:nth-child(3) {
+  width: 22%;
+}
+
+.admin-productos-table th:nth-child(4),
+.admin-productos-table td:nth-child(4) {
+  width: 14%;
+}
+
+.admin-productos-table th:nth-child(5),
+.admin-productos-table td:nth-child(5) {
+  width: 16%;
+}
+
+.admin-productos-table th:nth-child(6),
+.admin-productos-table td:nth-child(6) {
+  width: 12%;
+  text-align: center;
+}
+
+.admin-productos-table th {
+  padding: 17px 12px;
+  border-bottom: 1px solid #91aa9c;
+  color: #555;
+  font-size: 17px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.admin-productos-table td {
+  padding: 18px 12px;
+  border-bottom: 1px solid #a8beb1;
+  vertical-align: middle;
+  color: #777;
+  font-size: 17px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.admin-productos-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-productos-table tbody tr:hover {
+  background-color: #fff4ed;
+}
+
+.admin-productos-empty {
+  padding: 65px 15px !important;
+  color: #888 !important;
+  text-align: center !important;
+  font-weight: 400 !important;
+}
+
+/* IMÁGENES */
+
+.admin-productos-imagen,
+.admin-productos-sin-imagen {
+  width: 76px;
+  height: 76px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.admin-productos-sin-imagen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f2eadf;
+  color: #888;
+  text-align: center;
+  font-size: 12px;
+}
+
+/* NOMBRE Y PRECIO */
+
+.admin-productos-nombre {
+  color: #555;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.admin-productos-precio {
+  white-space: nowrap;
+}
+
+/* ESTADOS */
+
+.admin-productos-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 120px;
+  min-height: 38px;
+  padding: 8px 15px;
+  border-radius: 22px;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.admin-productos-status.disponible {
+  background-color: #d7eadb;
+  color: #1e4d3c;
+}
+
+.admin-productos-status.no-disponible {
+  background-color: #f9dcd0;
+  color: #bf4e31;
+}
+
+/* ACCIONES */
+
+.admin-productos-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.admin-productos-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 7px;
+  border: none;
+  border-radius: 9px;
+  background-color: #f5eee8;
+  cursor: pointer;
+}
+
+.admin-productos-actions button img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.admin-productos-actions .admin-productos-delete {
+  background-color: #f9e7df;
+}
+
+.admin-productos-actions button:hover:not(:disabled) {
+  background-color: #f4d5c6;
+}
+
+.admin-productos-actions button:disabled {
+  cursor: not-allowed;
+}
+
+/* TARJETAS MOBILE */
+
+.admin-productos-mobile {
+  display: none;
+}
+
+/* PANTALLAS MEDIANAS */
+
+@media (max-width: 1450px) {
+  .admin-productos-toolbar {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .admin-productos-search {
+    max-width: none;
+  }
+
+  .admin-productos-table-wrapper {
+    padding: 18px;
+  }
+
+  .admin-productos-table {
+    min-width: 850px;
+  }
+}
+
+/* TABLETS */
+
+@media (max-width: 900px) {
+  .admin-productos {
+    transform: none;
+  }
+
+  .admin-productos-table {
+    display: none;
+  }
+
+  .admin-productos-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .admin-productos-table-wrapper {
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .admin-productos-card {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid #e5dcd4;
+    border-radius: 17px;
+    background-color: #fff;
+  }
+
+  .admin-productos-card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    min-width: 0;
+  }
+
+  .admin-productos-card-top .admin-productos-imagen,
+  .admin-productos-card-top .admin-productos-sin-imagen {
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+    border-radius: 12px;
+  }
+
+  .admin-productos-card-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .admin-productos-card-info h2 {
+    margin: 0 0 7px;
+    color: #555;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-productos-card-info p {
+    margin: 0 0 9px;
+    color: #777;
+    font-size: 15px;
+  }
+
+  .admin-productos-card-info strong {
+    color: #1e4d3c;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .admin-productos-card-descripcion {
+    margin: 15px 0 0;
+    color: #777;
+    font-size: 15px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-productos-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+    padding-top: 15px;
+    border-top: 1px solid #e5dcd4;
+  }
+}
+
+/* CELULARES */
+
+@media (max-width: 700px) {
+  .admin-productos {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .admin-productos-heading {
+    margin-bottom: 24px;
+  }
+
+  .admin-productos-heading h1 {
+    font-size: 30px;
+  }
+
+  .admin-productos-heading p {
+    font-size: 16px;
+  }
+
+  .admin-productos-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .admin-productos-search,
+  .admin-productos-select,
+  .admin-productos-toolbar > .admin-productos-add {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .admin-productos-search input,
+  .admin-productos-select select {
+    height: 50px;
+    font-size: 16px;
+  }
+
+  .admin-productos-add {
+    min-height: 50px;
+    font-size: 16px;
+  }
+
+  .admin-productos-table-wrapper {
+    width: 100%;
+    min-width: 0;
+    padding: 16px;
+  }
+
+  .admin-productos-card {
+    padding: 17px;
+  }
+
+  .admin-productos-card-top .admin-productos-imagen,
+  .admin-productos-card-top .admin-productos-sin-imagen {
+    width: 76px;
+    height: 76px;
+  }
+
+  .admin-productos-card-info h2 {
+    font-size: 16px;
+  }
+
+  .admin-productos-card-info strong {
+    font-size: 17px;
+  }
+
+  .admin-productos-status {
+    min-width: 105px;
+    min-height: 36px;
+    padding: 7px 13px;
+    font-size: 14px;
+  }
+
+  .admin-productos-actions button {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* CELULARES PEQUEÑOS */
+
+@media (max-width: 380px) {
+  .admin-productos-table-wrapper {
+    padding: 12px;
+  }
+
+  .admin-productos-card {
+    padding: 13px;
+  }
+
+  .admin-productos-card-top {
+    gap: 11px;
+  }
+
+  .admin-productos-card-top .admin-productos-imagen,
+  .admin-productos-card-top .admin-productos-sin-imagen {
+    width: 65px;
+    height: 65px;
+  }
+
+  .admin-productos-card-info h2 {
+    font-size: 15px;
+  }
+
+  .admin-productos-status {
+    min-width: 95px;
+    font-size: 13px;
+  }
+}

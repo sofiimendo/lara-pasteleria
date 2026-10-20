@@ -1,0 +1,137 @@
+.eliminar-producto-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100dvh;
+  padding: 20px;
+  background-color: rgba(20, 44, 34, 0.5);
+}
+
+.eliminar-producto-modal {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 460px;
+  padding: 35px 30px;
+  border-radius: 24px;
+  background-color: #fffaf6;
+  text-align: center;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+}
+
+.eliminar-producto-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background-color: #f9dcd0;
+  color: #bf4e31;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.eliminar-producto-modal h2 {
+  margin: 0 0 14px;
+  color: #1e4d3c;
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.eliminar-producto-modal > p {
+  margin: 0;
+  color: #777;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.eliminar-producto-modal strong {
+  color: #1e4d3c;
+  font-weight: 700;
+}
+
+.eliminar-producto-error {
+  margin-top: 18px !important;
+  color: #bf4e31 !important;
+  font-size: 15px !important;
+}
+
+.eliminar-producto-acciones {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.eliminar-producto-acciones button {
+  flex: 1;
+  min-height: 50px;
+  padding: 11px 18px;
+  border-radius: 11px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.eliminar-producto-cancelar {
+  border: 1px solid #1e4d3c;
+  background-color: transparent;
+  color: #1e4d3c;
+}
+
+.eliminar-producto-cancelar:hover:not(:disabled) {
+  background-color: #eaf0e9;
+}
+
+.eliminar-producto-confirmar {
+  border: none;
+  background-color: #bf4e31;
+  color: #fff;
+}
+
+.eliminar-producto-confirmar:hover:not(:disabled) {
+  background-color: #a63f27;
+}
+
+.eliminar-producto-acciones button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .eliminar-producto-overlay {
+    padding: 16px;
+  }
+
+  .eliminar-producto-modal {
+    max-width: 420px;
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+
+  .eliminar-producto-modal h2 {
+    font-size: 24px;
+  }
+
+  .eliminar-producto-modal > p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .eliminar-producto-acciones {
+    flex-direction: column-reverse;
+  }
+
+  .eliminar-producto-acciones button {
+    width: 100%;
+    flex: none;
+  }
+}

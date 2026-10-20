@@ -1,0 +1,169 @@
+.admin-usuarios {
+  width: 100%;
+  color: #1e4d3c;
+}
+
+.admin-usuarios-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.admin-usuarios-heading h1 {
+  margin: 0 0 5px;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.admin-usuarios-heading p {
+  margin: 0;
+  color: #777;
+  font-size: 16px;
+}
+
+.admin-usuarios-add {
+  min-height: 46px;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 10px;
+  background: #1e4d3c;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-usuarios-add:hover {
+  background: #2b6952;
+}
+
+.admin-usuarios-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 25px;
+}
+
+.admin-usuarios-toolbar input {
+  width: 320px;
+  max-width: 100%;
+  min-height: 46px;
+  padding: 10px 15px;
+  border: 1px solid #1e4d3c;
+  border-radius: 10px;
+  background: transparent;
+  color: #555;
+  font-family: inherit;
+  font-size: 15px;
+}
+
+.admin-usuarios-toolbar input:focus {
+  outline: 2px solid #dc6943;
+  outline-offset: 2px;
+}
+
+.admin-usuarios-table-wrapper {
+  width: 100%;
+  padding: 25px 30px;
+  overflow-x: auto;
+  border-radius: 25px;
+  background: #fffaf6;
+}
+
+.admin-usuarios-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  color: #555;
+  font-size: 15px;
+}
+
+.admin-usuarios-table th {
+  padding: 15px 12px;
+  border-bottom: 1px solid #7b9b8c;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.admin-usuarios-table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #b5c6bc;
+}
+
+.admin-usuarios-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-usuarios-empty {
+  padding: 65px 15px !important;
+  color: #888;
+  text-align: center;
+}
+
+.admin-usuarios-role {
+  display: inline-block;
+  min-width: 110px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: #f9dcd0;
+  color: #bf4e31;
+  text-align: center;
+  font-size: 13px;
+}
+
+.admin-usuarios-status {
+  display: inline-block;
+  min-width: 95px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: #d7eadb;
+  color: #1e4d3c;
+  text-align: center;
+  font-size: 13px;
+}
+
+.admin-usuarios-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-usuarios-actions button {
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: #f2eadf;
+  cursor: pointer;
+}
+
+.admin-usuarios-actions button:hover {
+  background: #f4d5c6;
+}
+
+@media (max-width: 900px) {
+  .admin-usuarios-table-wrapper {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 650px) {
+  .admin-usuarios-heading h1 {
+    font-size: 25px;
+  }
+
+  .admin-usuarios-heading {
+    flex-direction: column;
+  }
+
+  .admin-usuarios-add,
+  .admin-usuarios-toolbar input {
+    width: 100%;
+  }
+
+  .admin-usuarios-table {
+    min-width: 650px;
+  }
+}

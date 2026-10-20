@@ -2,11 +2,11 @@ import { create } from 'zustand'
 
 const datosIniciales = {
   nombre: '',
-  whatsapp: '',
+  email: '',
   fecha: '',
   tipoEvento: '',
   pedido: '',
-  cantidadPersonas: '',
+  cantidadPersonas: '1',
   detalles: '',
 }
 

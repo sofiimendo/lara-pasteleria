@@ -13,17 +13,34 @@ function TarjetaProducto({
   const [enHover, setEnHover] = useState(false)
 
   const esControlada = typeof onDescripcionChange === 'function'
+
   const mostrarDescripcion = esControlada
     ? descripcionControlada
     : abierta || enHover
 
-  const descripcionId = `descripcion-${producto.id}-${esControlada ? 'mobile' : 'desktop'}`
+  const descripcionId = `descripcion-${producto.id}-${
+    esControlada ? 'mobile' : 'desktop'
+  }`
 
   function cambiarDescripcion(valor) {
     if (esControlada) {
       onDescripcionChange(valor)
     } else {
       setAbierta(valor)
+    }
+  }
+
+  function manejarClick(evento) {
+    if (evento.detail === 0) {
+      cambiarDescripcion(!mostrarDescripcion)
+      return
+    }
+
+    if (
+      window.matchMedia('(hover: none)').matches ||
+      evento.nativeEvent.pointerType === 'touch'
+    ) {
+      cambiarDescripcion(!mostrarDescripcion)
     }
   }
 
@@ -80,20 +97,27 @@ function TarjetaProducto({
       <button
         type="button"
         className={`tarjeta-producto__foto ${
-          mostrarDescripcion ? 'tarjeta-producto__foto--abierta' : ''
+          mostrarDescripcion
+            ? 'tarjeta-producto__foto--abierta'
+            : ''
         }`}
         aria-label={`Ver detalles de ${producto.nombre}`}
         aria-expanded={mostrarDescripcion}
         aria-controls={descripcionId}
         onPointerEnter={(evento) => {
-          if (!esControlada && evento.pointerType === 'mouse') {
+          if (
+            !esControlada &&
+            evento.pointerType === 'mouse'
+          ) {
             setEnHover(true)
           }
         }}
         onPointerLeave={() => setEnHover(false)}
-        onClick={() => cambiarDescripcion(!mostrarDescripcion)}
+        onClick={manejarClick}
         onBlur={() => {
-          if (!esControlada) setAbierta(false)
+          if (!esControlada) {
+            setAbierta(false)
+          }
         }}
         onKeyDown={cerrarDescripcion}
       >

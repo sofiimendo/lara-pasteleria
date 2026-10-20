@@ -1,0 +1,148 @@
+.grafico-pedidos {
+  width: 100%;
+  margin-top: 22px;
+}
+
+.grafico-pedidos-area {
+  display: flex;
+  height: 215px;
+  gap: 12px;
+}
+
+.grafico-pedidos-eje {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 180px;
+  color: #666;
+  font-size: 13px;
+  text-align: right;
+}
+
+.grafico-pedidos-columnas {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  flex: 1;
+  gap: 12px;
+  min-width: 0;
+  height: 215px;
+}
+
+.grafico-pedidos-lineas {
+  position: absolute;
+  inset: 0 0 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.grafico-pedidos-lineas span {
+  width: 100%;
+  border-top: 1px solid #a5b8ac;
+}
+
+.grafico-pedidos-columna {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 215px;
+}
+
+.grafico-pedidos-barra {
+  display: flex;
+  flex-direction: column-reverse;
+  width: 58%;
+  max-width: 48px;
+  height: 180px;
+  overflow: hidden;
+}
+
+.grafico-pedidos-segmento {
+  width: 100%;
+  min-height: 0;
+}
+
+.grafico-pedidos-segmento.nuevos {
+  background: #df7049;
+}
+
+.grafico-pedidos-segmento.pendientes {
+  background: #ffda97;
+}
+
+.grafico-pedidos-segmento.confirmados {
+  background: #87c78f;
+}
+
+.grafico-pedidos-dia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  color: #555;
+  font-size: 13px;
+}
+
+.grafico-pedidos-leyenda {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin-top: 10px;
+}
+
+.grafico-pedidos-leyenda span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #555;
+  font-size: 13px;
+}
+
+.grafico-pedidos-leyenda i {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border-radius: 2px;
+}
+
+.grafico-leyenda-nuevos {
+  background: #df7049;
+}
+
+.grafico-leyenda-pendientes {
+  background: #ffda97;
+}
+
+.grafico-leyenda-confirmados {
+  background: #87c78f;
+}
+
+@media (max-width: 650px) {
+  .grafico-pedidos-area {
+    gap: 6px;
+  }
+
+  .grafico-pedidos-columnas {
+    gap: 4px;
+  }
+
+  .grafico-pedidos-barra {
+    width: 70%;
+  }
+
+  .grafico-pedidos-eje,
+  .grafico-pedidos-dia {
+    font-size: 11px;
+  }
+
+  .grafico-pedidos-leyenda {
+    gap: 12px;
+  }
+}
