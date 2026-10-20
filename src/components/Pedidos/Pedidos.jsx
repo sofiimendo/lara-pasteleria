@@ -49,9 +49,13 @@ function Pedidos() {
   const actualizarCampo = usePedidoStore(
     (estado) => estado.actualizarCampo
   )
+  const reiniciarPedido = usePedidoStore(
+    (estado) => estado.reiniciarPedido
+  )
 
   const [errores, setErrores] = useState({})
   const [mensajeFormulario, setMensajeFormulario] = useState('')
+  const [enviando, setEnviando] = useState(false)
 
   const cantidadPersonas =
     Number.isSafeInteger(Number(datos.cantidadPersonas)) &&
@@ -143,8 +147,11 @@ function Pedidos() {
     return Object.keys(nuevosErrores).length === 0
   }
 
-  function enviarConsulta(evento) {
+  async function enviarConsulta(evento) {
     evento.preventDefault()
+    if (enviando) return
+
+    setMensajeFormulario('')
 
     if (!validarPedido()) {
       setMensajeFormulario(
@@ -153,9 +160,74 @@ function Pedidos() {
       return
     }
 
-    setMensajeFormulario(
-      '¡Tu consulta está lista! Para enviarla, primero tenés que registrarte o iniciar sesión. Estamos preparando esa conexión.'
-    )
+    const token = sessionStorage.getItem('lara_cliente_token')
+
+    if (!token) {
+      setMensajeFormulario(
+        'Para enviar tu consulta, primero iniciá sesión o registrate. Los datos que completaste se conservan.'
+      )
+      return
+    }
+
+    setEnviando(true)
+
+    try {
+      const respuesta = await fetch(
+        'http://localhost:4000/api/pedidos',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            nombre: datos.nombre.trim(),
+            email: datos.email.trim(),
+            fecha: datos.fecha,
+            tipoEvento: datos.tipoEvento,
+            pedido: datos.pedido,
+            cantidadPersonas,
+            detalles: datos.detalles.trim(),
+          }),
+        }
+      )
+
+      const resultado = await respuesta.json().catch(() => ({}))
+
+      if (!respuesta.ok) {
+        if (respuesta.status === 401 || respuesta.status === 403) {
+          setMensajeFormulario(
+            'Tu sesión venció o no es válida. Iniciá sesión nuevamente para enviar tu consulta.'
+          )
+        } else {
+          setMensajeFormulario(
+            resultado.message ||
+              'No pudimos enviar tu consulta. Intentá nuevamente.'
+          )
+        }
+        return
+      }
+
+      if (respuesta.status !== 201 || !resultado.pedido?.id) {
+        setMensajeFormulario(
+          'No pudimos confirmar la recepción de tu consulta. Verificá tus pedidos antes de volver a enviarla.'
+        )
+        return
+      }
+
+      reiniciarPedido()
+      setErrores({})
+      setMensajeFormulario(
+        resultado.message ||
+          '¡Consulta recibida! Lara confirmará disponibilidad y presupuesto.'
+      )
+    } catch {
+      setMensajeFormulario(
+        'No pudimos conectar con Lara. Revisá que el servidor esté funcionando e intentá nuevamente.'
+      )
+    } finally {
+      setEnviando(false)
+    }
   }
 
   return (
@@ -358,7 +430,7 @@ function Pedidos() {
                 <button
                   type="button"
                   aria-label="Restar una persona"
-                  disabled={cantidadPersonas <= 1}
+                  disabled={cantidadPersonas <= 1 || enviando}
                   onClick={() => cambiarCantidad(-1)}
                 >
                   −
@@ -378,6 +450,7 @@ function Pedidos() {
                 <button
                   type="button"
                   aria-label="Sumar una persona"
+                  disabled={enviando}
                   onClick={() => cambiarCantidad(1)}
                 >
                   +
@@ -415,15 +488,13 @@ function Pedidos() {
             <button
               type="submit"
               className="pedidos__boton"
+              disabled={enviando}
             >
-              ENVIAR CONSULTA →
+              {enviando ? 'ENVIANDO CONSULTA...' : 'ENVIAR CONSULTA →'}
             </button>
 
             {mensajeFormulario && (
-              <p
-                className="pedidos__error"
-                role="status"
-              >
+              <p className="pedidos__error" role="status">
                 {mensajeFormulario}
               </p>
             )}
