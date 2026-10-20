@@ -12,6 +12,8 @@ import Dashboard from "./pages/admin/Dashboard";
 import ProductosAdmin from "./pages/admin/Productos";
 import PedidosAdmin from "./pages/admin/Pedidos";
 import UsuariosAdmin from "./pages/admin/Usuarios";
+import Registro from "./pages/clientes/Registro";
+import LoginCliente from "./pages/clientes/Login";
 
 function Landing() {
   return (
@@ -35,6 +37,9 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+
+      <Route path="/registro" element={<Registro />} />
+      <Route path="/login" element={<LoginCliente />} />
 
       <Route path="/admin/login" element={<Login />} />
 
