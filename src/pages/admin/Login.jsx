@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import brunch from "../../assets/imagenes/brunch.png";
+import taza from "../../assets/elementos/tazita.png";
+import medialuna from "../../assets/elementos/medialunaterracota.png";
+import ojoAbierto from "../../assets/admin/ojoabierto.svg";
+import ojoCerrado from "../../assets/admin/ojocerrado.svg";
 import "./Login.css";
 
 const API_URL = (
@@ -11,11 +16,12 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [mostrarPassword, setMostrarPassword] = useState(false);
   const [error, setError] = useState("");
   const [cargando, setCargando] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  async function handleSubmit(evento) {
+    evento.preventDefault();
 
     if (cargando) return;
 
@@ -56,7 +62,6 @@ function Login() {
       }
 
       sessionStorage.setItem("lara_admin_token", resultado.token);
-
       sessionStorage.setItem(
         "lara_admin_usuario",
         JSON.stringify(resultado.usuario)
@@ -70,87 +75,133 @@ function Login() {
     } finally {
       setCargando(false);
     }
-  };
+  }
 
   return (
-    <div className="admin-login">
-      <div className="admin-login-card">
-        <button
-          className="admin-login-back"
-          type="button"
-          onClick={() => navigate("/")}
-        >
+    <main className="admin-login">
+      <div className="admin-login-contenedor">
+        <Link to="/" className="admin-login-back">
           ← Volver al inicio
-        </button>
+        </Link>
 
-        <div className="admin-login-brand">
-          <span className="admin-login-brand-icon">✿</span>
-          <h1>Lara Pastelería</h1>
-          <p>Panel de administración</p>
-        </div>
+        <section
+          className="admin-login-card"
+          aria-labelledby="admin-login-titulo"
+        >
+          <div className="admin-login-foto">
+            <img
+              src={brunch}
+              alt="Desayuno con café, tostada y frutas de Lara Pastelería"
+              className="admin-login-foto-imagen"
+            />
+          </div>
 
-        <h2>¡Bienvenida!</h2>
+          <div className="admin-login-panel">
+            <img
+              src={taza}
+              alt=""
+              aria-hidden="true"
+              className="admin-login-decoracion admin-login-taza"
+            />
 
-        <p className="admin-login-subtitle">
-          Ingresá tus datos para administrar tu pastelería.
-        </p>
+            <div className="admin-login-formulario">
+              <h1 id="admin-login-titulo">Iniciar Sesión</h1>
 
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="admin-email">Correo electrónico</label>
+              <form onSubmit={handleSubmit} aria-busy={cargando}>
+                <label
+                  htmlFor="admin-email"
+                  className="admin-login-label"
+                >
+                  Correo electrónico
+                </label>
 
-          <input
-            id="admin-email"
-            type="email"
-            placeholder="tu@email.com"
-            autoComplete="username"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={cargando}
-          />
+                <input
+                  id="admin-email"
+                  name="email"
+                  type="email"
+                  placeholder="Ingresá tu email"
+                  autoComplete="username"
+                  maxLength={254}
+                  value={email}
+                  onChange={(evento) => {
+                    setEmail(evento.target.value);
+                    setError("");
+                  }}
+                  required
+                  disabled={cargando}
+                />
 
-          <label htmlFor="admin-password">Contraseña</label>
+                <label
+                  htmlFor="admin-password"
+                  className="admin-login-label"
+                >
+                  Contraseña
+                </label>
 
-          <input
-            id="admin-password"
-            type="password"
-            placeholder="Ingresá tu contraseña"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={cargando}
-          />
+                <div className="admin-login-password">
+                  <input
+                    id="admin-password"
+                    name="password"
+                    type={mostrarPassword ? "text" : "password"}
+                    placeholder="Ingresá tu contraseña"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(evento) => {
+                      setPassword(evento.target.value);
+                      setError("");
+                    }}
+                    required
+                    disabled={cargando}
+                  />
 
-          {error && (
-            <p
-              role="alert"
-              style={{
-                color: "#c85d32",
-                fontSize: "14px",
-                marginTop: "12px",
-                marginBottom: "12px",
-                textAlign: "center",
-              }}
-            >
-              {error}
-            </p>
-          )}
+                  <button
+                    type="button"
+                    className="admin-login-ojo"
+                    onClick={() => {
+                      setMostrarPassword((actual) => !actual);
+                    }}
+                    aria-label={
+                      mostrarPassword
+                        ? "Ocultar contraseña"
+                        : "Mostrar contraseña"
+                    }
+                    aria-pressed={mostrarPassword}
+                    aria-controls="admin-password"
+                    disabled={cargando}
+                  >
+                    <img
+                      src={mostrarPassword ? ojoAbierto : ojoCerrado}
+                      alt=""
+                    />
+                  </button>
+                </div>
 
-          <button
-            className="admin-login-submit"
-            type="submit"
-            disabled={cargando}
-          >
-            {cargando ? "Iniciando sesión..." : "Iniciar sesión"}
-          </button>
-        </form>
+                {error && (
+                  <p className="admin-login-error" role="alert">
+                    {error}
+                  </p>
+                )}
 
-        <p className="admin-login-footer">
-          Un espacio para organizar tus creaciones con amor ♡
-        </p>
+                <button
+                  className="admin-login-submit"
+                  type="submit"
+                  disabled={cargando}
+                >
+                  {cargando ? "INGRESANDO..." : "INGRESAR"}
+                </button>
+              </form>
+            </div>
+
+            <img
+              src={medialuna}
+              alt=""
+              aria-hidden="true"
+              className="admin-login-decoracion admin-login-medialuna"
+            />
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
 
