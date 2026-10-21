@@ -3,10 +3,16 @@ import { categoriasMenu, productosMenu } from '../../data/productosMenu'
 import TarjetaProducto from './TarjetaProducto'
 import './Menu.css'
 
+const API_URL = (
+  import.meta.env.VITE_API_URL || 'http://localhost:4000'
+).trim().replace(/\/+$/, '')
+
 function CategoriaMobile({ categoria, productos }) {
   const [posicion, setPosicion] = useState(0)
   const [descripcionAbierta, setDescripcionAbierta] = useState(false)
   const [pausado, setPausado] = useState(false)
+
+  const posicionActual = Math.min(posicion, productos.length - 1)
 
   useEffect(() => {
     if (productos.length <= 1 || descripcionAbierta || pausado) return
@@ -19,14 +25,16 @@ function CategoriaMobile({ categoria, productos }) {
   }, [productos.length, descripcionAbierta, pausado])
 
   function mover(movimiento) {
-    setPosicion((actual) =>
-      (actual + movimiento + productos.length) % productos.length
+    setPosicion(
+      (posicionActual + movimiento + productos.length) % productos.length
     )
     setDescripcionAbierta(false)
     setPausado(true)
   }
 
-  const producto = productos[posicion]
+  const producto = productos[posicionActual]
+
+  if (!producto) return null
 
   return (
     <div className="menu__fila menu__fila--mobile">
@@ -56,7 +64,7 @@ function CategoriaMobile({ categoria, productos }) {
           </button>
 
           <span className="menu__contador">
-            {posicion + 1} / {productos.length}
+            {posicionActual + 1} / {productos.length}
           </span>
 
           <button
@@ -84,20 +92,194 @@ function CategoriaMobile({ categoria, productos }) {
   )
 }
 
-function Menu() {
-  const [posiciones, setPosiciones] = useState({})
+function Categoria({ categoria, productos }) {
+  const [posicion, setPosicion] = useState(0)
 
-  function moverCategoria(id, movimiento, total) {
-    setPosiciones((anteriores) => {
-      const actual = anteriores[id] || 0
-      const maximo = Math.max(0, total - 3)
+  const maximo = Math.max(0, productos.length - 3)
+  const posicionActual = Math.min(posicion, maximo)
+  const productosVisibles = productos.slice(
+    posicionActual,
+    posicionActual + 3
+  )
 
-      return {
-        ...anteriores,
-        [id]: Math.max(0, Math.min(actual + movimiento, maximo)),
-      }
+  function mover(movimiento) {
+    setPosicion(
+      Math.max(0, Math.min(posicionActual + movimiento, maximo))
+    )
+  }
+
+  if (!productos.length) return null
+
+  return (
+    <div className="menu__categoria">
+      <h4 className="menu__categoria-titulo">{categoria.nombre}</h4>
+
+      <div className="menu__fila menu__fila--desktop">
+        <div
+          className="menu__productos"
+          id={`productos-desktop-${categoria.id}`}
+        >
+          {productosVisibles.map((producto) => (
+            <TarjetaProducto key={producto.id} producto={producto} />
+          ))}
+        </div>
+
+        {productos.length > 3 && (
+          <div className="menu__controles">
+            <button
+              type="button"
+              className="menu__ampliar"
+              onClick={() => mover(1)}
+              disabled={posicionActual >= maximo}
+              aria-label={`Siguiente producto de ${categoria.nombre}`}
+              aria-controls={`productos-desktop-${categoria.id}`}
+            >
+              <span aria-hidden="true">+</span>
+            </button>
+
+            <button
+              type="button"
+              className="menu__ampliar"
+              onClick={() => mover(-1)}
+              disabled={posicionActual === 0}
+              aria-label={`Producto anterior de ${categoria.nombre}`}
+              aria-controls={`productos-desktop-${categoria.id}`}
+            >
+              <span aria-hidden="true">−</span>
+            </button>
+          </div>
+        )}
+      </div>
+
+      <CategoriaMobile categoria={categoria} productos={productos} />
+    </div>
+  )
+}
+
+function agruparProductos(productos) {
+  const grupos = new Map()
+
+  for (const producto of productos) {
+    const nombreCategoria =
+      producto.categoria?.trim() || 'Sin categoría'
+
+    const clave = nombreCategoria
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+
+    if (!grupos.has(clave)) {
+      grupos.set(clave, {
+        nombre: nombreCategoria,
+        productos: [],
+      })
+    }
+
+    grupos.get(clave).productos.push({
+      id: `api-${producto._id}`,
+      nombre: producto.nombre,
+      descripcion: producto.descripcion || '',
+      imagen: producto.imagen || null,
+      presentaciones: [
+        {
+          nombre: 'Precio',
+          precio: producto.precio,
+        },
+      ],
     })
   }
+
+  return Array.from(grupos.values()).map((grupo, indice) => ({
+    ...grupo,
+    id: `local-${indice}`,
+  }))
+}
+
+function Menu() {
+  const [productosAPI, setProductosAPI] = useState([])
+  const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState('')
+  const [intento, setIntento] = useState(0)
+
+  useEffect(() => {
+    const controlador = new AbortController()
+    let activo = true
+
+    const limite = window.setTimeout(() => {
+      controlador.abort()
+    }, 90000)
+
+    async function cargarProductos() {
+      try {
+        const respuesta = await fetch(`${API_URL}/api/productos`, {
+          signal: controlador.signal,
+          cache: 'no-store',
+        })
+
+        if (!respuesta.ok) {
+          throw new Error('No se pudo cargar el menú')
+        }
+
+        const datos = await respuesta.json()
+
+        if (
+          !Array.isArray(datos.productos) ||
+          !datos.productos.every(
+            (producto) =>
+              producto &&
+              typeof producto._id === 'string' &&
+              typeof producto.nombre === 'string' &&
+              typeof producto.precio === 'number' &&
+              Number.isFinite(producto.precio) &&
+              producto.precio >= 0 &&
+              (
+                producto.categoria == null ||
+                typeof producto.categoria === 'string'
+              )
+          )
+        ) {
+          throw new Error('La respuesta del menú no es válida')
+        }
+
+        if (activo) {
+          setProductosAPI(
+            datos.productos.filter(
+              (producto) => producto.disponible === true
+            )
+          )
+        }
+      } catch {
+        if (activo) {
+          setError(
+            'No pudimos cargar los productos del local. Intentá nuevamente en unos momentos.'
+          )
+        }
+      } finally {
+        window.clearTimeout(limite)
+
+        if (activo) {
+          setCargando(false)
+        }
+      }
+    }
+
+    cargarProductos()
+
+    return () => {
+      activo = false
+      window.clearTimeout(limite)
+      controlador.abort()
+    }
+  }, [intento])
+
+  function reintentar() {
+    setError('')
+    setCargando(true)
+    setIntento((actual) => actual + 1)
+  }
+
+  const gruposAPI = agruparProductos(productosAPI)
 
   return (
     <section id="menu" className="menu" aria-labelledby="menu-titulo">
@@ -106,74 +288,80 @@ function Menu() {
           MENÚ & PRODUCTOS
         </h2>
 
-        {categoriasMenu.map((categoria) => {
-          const productos = productosMenu.filter(
-            (producto) => producto.categoria === categoria.id
-          )
+        <section
+          className="menu__seccion"
+          aria-labelledby="menu-local-titulo"
+          aria-busy={cargando}
+        >
+          <h3 id="menu-local-titulo" className="menu__seccion-titulo">
+            Productos del local
+          </h3>
 
-          if (!productos.length) return null
+          {cargando && (
+            <p className="menu__mensaje" role="status">
+              Cargando productos del local…
+            </p>
+          )}
 
-          const maximo = Math.max(0, productos.length - 3)
-          const posicion = Math.min(posiciones[categoria.id] || 0, maximo)
-          const productosVisibles = productos.slice(posicion, posicion + 3)
+          {error && (
+            <div className="menu__aviso">
+              <p className="menu__mensaje" role="alert">
+                {error}
+              </p>
 
-          return (
-            <div className="menu__categoria" key={categoria.id}>
-              <h3 className="menu__categoria-titulo">
-                {categoria.nombre}
-              </h3>
+              <button
+                type="button"
+                className="menu__reintentar"
+                onClick={reintentar}
+              >
+                Reintentar
+              </button>
+            </div>
+          )}
 
-              <div className="menu__fila menu__fila--desktop">
-                <div
-                  className="menu__productos"
-                  id={`productos-desktop-${categoria.id}`}
-                >
-                  {productosVisibles.map((producto) => (
-                    <TarjetaProducto
-                      key={producto.id}
-                      producto={producto}
-                    />
-                  ))}
-                </div>
+          {!cargando && !error && gruposAPI.length === 0 && (
+            <p className="menu__mensaje" role="status">
+              Por el momento no hay productos del local disponibles.
+            </p>
+          )}
 
-                {productos.length > 3 && (
-                  <div className="menu__controles">
-                    <button
-                      type="button"
-                      className="menu__ampliar"
-                      onClick={() =>
-                        moverCategoria(categoria.id, 1, productos.length)
-                      }
-                      disabled={posicion >= maximo}
-                      aria-label={`Siguiente producto de ${categoria.nombre}`}
-                      aria-controls={`productos-desktop-${categoria.id}`}
-                    >
-                      <span aria-hidden="true">+</span>
-                    </button>
+          {!cargando && !error && gruposAPI.map((grupo) => (
+            <Categoria
+              key={grupo.id}
+              categoria={grupo}
+              productos={grupo.productos}
+            />
+          ))}
+        </section>
 
-                    <button
-                      type="button"
-                      className="menu__ampliar"
-                      onClick={() =>
-                        moverCategoria(categoria.id, -1, productos.length)
-                      }
-                      disabled={posicion === 0}
-                      aria-label={`Producto anterior de ${categoria.nombre}`}
-                      aria-controls={`productos-desktop-${categoria.id}`}
-                    >
-                      <span aria-hidden="true">−</span>
-                    </button>
-                  </div>
-                )}
-              </div>
+        <section
+          className="menu__seccion menu__seccion--catalogo"
+          aria-labelledby="menu-catalogo-titulo"
+        >
+          <h3
+            id="menu-catalogo-titulo"
+            className="menu__seccion-titulo"
+          >
+            Catálogo original
+          </h3>
 
-              <CategoriaMobile
-                categoria={categoria}
+          {categoriasMenu.map((categoria) => {
+            const productos = productosMenu.filter(
+              (producto) => producto.categoria === categoria.id
+            )
+
+            return (
+              <Categoria
+                key={categoria.id}
+                categoria={{
+                  ...categoria,
+                  id: `catalogo-${categoria.id}`,
+                }}
                 productos={productos}
               />
-            </div>
-          )
-        })}
+            )
+          })}
+        </section>
 
         <p className="menu__consulta">
           ¿Buscás algo para un evento?{' '}
