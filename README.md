@@ -1,97 +1,326 @@
 # 🌸 Lara Pastelería
 
-### Landing Page | React + Vite
+Aplicación web para Lara Pastelería, un emprendimiento que combina pastelería clásica, opciones saludables y cafetería.
 
-Landing page desarrollada para **Lara Pastelería**, un emprendimiento gastronómico que combina pastelería clásica, opciones saludables y cafetería.
+Incluye una landing pública, registro e inicio de sesión de clientes y un panel administrativo para gestionar productos, pedidos y cuentas administradoras.
 
-El proyecto tiene como objetivo crear un espacio digital atractivo, intuitivo y responsive, donde los clientes puedan conocer los productos, explorar el menú y acceder a un formulario de pedidos.
+El sistema permite enviar consultas por encargo. Completar el formulario no confirma el pedido: Lara informa disponibilidad y presupuesto.
 
-La aplicación fue desarrollada como proyecto de Frontend con React, utilizando componentes reutilizables, organización modular y control de versiones colaborativo.
+No incluye carrito ni pagos online.
 
-### 🌐 Sitio web
+## Sitio y repositorios
 
-**[🌸 Visitar Lara Pastelería](https://lara-pasteleria.vercel.app/)**
+| Recurso | Dirección |
+|---|---|
+| Sitio publicado | https://lara-pasteleria.vercel.app |
+| Login de clientes | https://lara-pasteleria.vercel.app/login |
+| Registro de clientes | https://lara-pasteleria.vercel.app/registro |
+| Login administrativo | https://lara-pasteleria.vercel.app/admin/login |
+| API publicada | https://lara-backend-5tq4.onrender.com |
+| Estado de la API | https://lara-backend-5tq4.onrender.com/api/health |
+| Repositorio frontend | https://github.com/sofiimendo/lara-pasteleria |
+| Repositorio backend | https://github.com/sofiimendo/lara-backend |
 
-**[💻 Repositorio en GitHub](https://github.com/sofiimendo/lara-pasteleria)**
-
----
-
-## ✨ Funcionalidades
-
-### 🌷 Inicio
-
-- Presentación visual del emprendimiento.
-- Animaciones e interacciones con productos destacados.
-- Elementos gráficos personalizados.
-- Adaptación de las animaciones para dispositivos móviles.
-
-### 🍪 Menú de productos
-
-- Visualización de productos mediante tarjetas.
-- Organización por categorías:
-  - Healthy / Fit.
-  - Clásicos de pastelería.
-  - Cafetería y bebidas.
-- Información de productos vinculada al catálogo centralizado.
-- Presentación responsive de categorías y tarjetas.
-- Interacciones adaptadas a distintos dispositivos.
-
-### 💌 Pedidos
-
-- Formulario para ingresar información de pedidos.
-- Interfaz adaptada a dispositivos móviles y computadoras.
-- Recursos gráficos personalizados.
-- Organización visual de los campos para facilitar su uso.
-
-### 📍 Ubicación
-
-- Sección con información de ubicación del emprendimiento.
-- Integración con la estructura principal de la landing.
-
-### 🌸 Footer
-
-- Información de contacto.
-- Elementos visuales relacionados con la identidad de la marca.
-- Adaptación al diseño general del sitio.
-
----
-
-## 🛠️ Tecnologías utilizadas
+## Tecnologías
 
 | Tecnología | Uso |
-|------------|-----|
-| React | Desarrollo de componentes e interfaces |
-| JavaScript / JSX | Lógica e interactividad |
-| Vite | Entorno de desarrollo y compilación |
-| CSS3 | Estilos, animaciones y diseño responsive |
-| pnpm | Gestión de paquetes y dependencias |
-| Git | Control de versiones |
-| GitHub | Repositorio y trabajo colaborativo |
-| Vercel | Despliegue y alojamiento del frontend |
+|---|---|
+| React y JSX | Componentes e interfaces |
+| React Router | Navegación y rutas |
+| Zustand | Estado del formulario de pedidos |
+| Vite | Desarrollo y compilación |
+| CSS y SCSS | Diseño responsive y estilos |
+| Fetch API | Comunicación con el backend |
+| pnpm | Gestión de dependencias |
+| Git y GitHub | Versionado y trabajo colaborativo |
+| Vercel | Publicación del frontend |
+| Render | Publicación del backend |
+| MongoDB Atlas | Persistencia de datos mediante la API |
+| Cloudinary | Almacenamiento de imágenes mediante el backend |
 
----
+El backend utiliza Node.js, Express, Mongoose, Zod, JWT, bcrypt, express-rate-limit y Multer. Su configuración y sus pruebas se documentan en el repositorio `lara-backend`.
 
-## 📁 Estructura del proyecto
+## Funcionalidades
+
+### Landing pública
+
+- Presentación del emprendimiento.
+- Productos destacados con animaciones e interacciones.
+- Menú organizado por categorías.
+- Formulario de consultas autenticado.
+- Ubicación, horarios y contacto.
+- Diseño adaptado a computadoras y celulares.
+
+### Menú y productos
+
+El menú mantiene dos secciones diferenciadas.
+
+#### Productos del local
+
+- Consulta `GET /api/productos`.
+- Muestra los productos disponibles administrados desde el panel.
+- Presenta nombre, descripción, imagen y precio.
+- Agrupa los productos por categoría.
+- Incluye navegación entre tarjetas.
+- Muestra estados de carga, error y listado vacío.
+- Permite reintentar si falla la conexión.
+
+La consulta se realiza al montar el componente. Para comprobar cambios hechos desde otra ventana, se debe recargar la landing.
+
+#### Catálogo original
+
+- Conserva los productos precargados del frontend.
+- Utiliza `src/data/productosMenu.js` y `src/data/catalogoLara.js`.
+- Mantiene imágenes, descripciones y presentaciones.
+- Contempla precios a consultar, precios “desde” y distintos tamaños.
+- Conserva las indicaciones de anticipación y seña cuando corresponden.
+
+Esta separación es una transición. El catálogo original todavía no se administra desde el panel y puede contener productos equivalentes a los de la sección conectada a la API.
+
+Desactivar o eliminar un producto del panel afecta a su registro en “Productos del local”; no modifica los datos independientes del catálogo original.
+
+### Clientes
+
+- Registro de cuentas.
+- Inicio y cierre de sesión.
+- Validación de confirmación de contraseña en el registro.
+- Envío de consultas con token de cliente.
+- Sesión de cliente separada de la administrativa.
+
+### Formulario público de pedidos
+
+- Nombre y email de contacto.
+- Fecha de entrega.
+- Tipo de evento.
+- Tipo de pedido.
+- Cantidad aproximada de personas.
+- Detalles adicionales.
+- Mensajes de validación y resultado del envío.
+
+La API vincula cada pedido con el cliente autenticado. El email de contacto no determina la propiedad del pedido.
+
+Las tortas y medialunas requieren al menos cinco días de anticipación. Las demás opciones admiten fechas desde hoy. El backend calcula estas reglas según Buenos Aires.
+
+### Panel administrativo
+
+#### Inicio / Dashboard
+
+- Resumen de pedidos.
+- Contadores por estado.
+- Pedidos recientes.
+- Gráfico de pedidos.
+- Resumen de productos activos.
+
+#### Productos
+
+- Listado administrativo de productos disponibles y no disponibles.
+- Búsqueda por nombre y filtro por categoría.
+- Creación y edición.
+- Precio, descripción, categoría y disponibilidad.
+- Selección y vista previa de imágenes.
+- Subida de imágenes mediante el backend a Cloudinary.
+- Eliminación con confirmación.
+
+La carga admite JPG, PNG y WebP de hasta 5 MB.
+
+Eliminar un producto no elimina automáticamente sus imágenes de Cloudinary.
+
+#### Pedidos
+
+- Listado y búsqueda.
+- Filtros por fecha y estado.
+- Consulta de detalles.
+- Identificación de pedidos web y presenciales.
+- Cambio de estado.
+- Creación de pedidos presenciales desde una cuenta administradora.
+
+Los pedidos presenciales requieren al menos un contacto: email o teléfono.
+
+El backend contempla una confirmación administrativa para tortas y medialunas con menos de cinco días de anticipación. No permite fechas pasadas.
+
+La pantalla actual permite consultar detalles y cambiar estados. La edición de los datos y la eliminación de pedidos desde el frontend siguen pendientes, aunque la API dispone de esas operaciones.
+
+#### Usuarios
+
+- Listado de cuentas administradoras.
+- Búsqueda por nombre o email.
+- Creación de administradores.
+- Edición de nombre, email y estado activo/inactivo.
+- Eliminación con confirmación.
+
+El backend impide que una cuenta administradora se elimine o se desactive a sí misma.
+
+#### Perfil y navegación
+
+- Menú lateral compartido.
+- Navegación adaptada a celular.
+- Menú del perfil con cierre de sesión.
+- Login administrativo con diseño propio.
+- Botón para mostrar y ocultar la contraseña.
+
+La campanita es un elemento visual marcado como “Notificaciones: próximamente”. No implementa notificaciones.
+
+## Rutas del frontend
+
+| Ruta | Pantalla |
+|---|---|
+| `/` | Landing |
+| `/registro` | Registro de clientes |
+| `/login` | Login de clientes |
+| `/admin/login` | Login administrativo |
+| `/admin` | Dashboard |
+| `/admin/productos` | Administración de productos |
+| `/admin/pedidos` | Administración de pedidos |
+| `/admin/usuarios` | Administración de usuarios |
+
+El acceso al panel requiere una sesión administrativa. Las autorizaciones de las operaciones se verifican también en el backend.
+
+## Instalación y ejecución local
+
+### Requisitos
+
+- Node.js.
+- pnpm.
+- Git.
+- Backend disponible para utilizar las funciones conectadas.
+
+### Clonar e instalar
+
+```bash
+git clone https://github.com/sofiimendo/lara-pasteleria.git
+cd lara-pasteleria
+pnpm install
+```
+
+Si el entorno administra pnpm mediante Corepack, se puede utilizar `corepack pnpm` en los comandos.
+
+### Dirección de la API
+
+El frontend utiliza `VITE_API_URL` como URL base, sin `/api` y sin barra final.
+
+Para utilizar el backend publicado, se puede configurar en un archivo local `.env.local`:
+
+```env
+VITE_API_URL=https://lara-backend-5tq4.onrender.com
+```
+
+Si la variable no está definida, los componentes utilizan:
+
+```text
+http://localhost:4000
+```
+
+Las rutas agregan `/api` en sus solicitudes.
+
+`VITE_API_URL` es una configuración pública del frontend. No deben colocarse contraseñas, tokens, credenciales de MongoDB ni secretos de Cloudinary en variables con prefijo `VITE_`.
+
+### Iniciar el frontend
+
+```bash
+pnpm dev
+```
+
+Vite informa la dirección disponible, normalmente:
+
+```text
+http://localhost:5173
+```
+
+La terminal debe permanecer abierta mientras se utiliza el servidor local.
+
+Si se modifica la configuración de entorno, se debe reiniciar Vite.
+
+### Utilizar el backend local
+
+El backend se ejecuta desde su propio repositorio:
+
+```bash
+pnpm dev
+```
+
+Frontend y backend requieren terminales independientes.
+
+Para comprobar el backend local:
+
+```bash
+curl --max-time 10 -i http://localhost:4000/api/health
+```
+
+Las variables configuradas en Render no se copian automáticamente al entorno local.
+
+La carga de imágenes local requiere configurar de forma privada las variables de Cloudinary en el backend. Durante una prueba se comprobó que, sin esa configuración, la subida falla aunque el frontend abra correctamente.
+
+## Compilación
+
+```bash
+pnpm build
+```
+
+La compilación genera `dist/`.
+
+Para previsualizarla:
+
+```bash
+pnpm preview
+```
+
+La compilación correcta comprueba que el proyecto puede construirse; no reemplaza las pruebas funcionales.
+
+## Despliegue
+
+### Frontend en Vercel
+
+- Repositorio: `lara-pasteleria`.
+- Rama de producción: `main`.
+- Compilación con Vite.
+- Directorio de salida: `dist`.
+- Variable configurada: `VITE_API_URL`.
+- Valor utilizado: `https://lara-backend-5tq4.onrender.com`.
+
+Los cambios en esta variable requieren un nuevo despliegue para incorporarse a la compilación.
+
+### Rutas de React
+
+El archivo `vercel.json` permite abrir directamente y recargar las rutas del frontend:
+
+```json
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+```
+
+Se corrigió el 404 que aparecía al abrir directamente el login administrativo publicado.
+
+### Backend en Render
+
+La API se publica por separado desde `lara-backend`.
+
+El backend tiene configurado el origen público del frontend mediante `FRONTEND_URL`:
+
+```text
+https://lara-pasteleria.vercel.app
+```
+
+Las credenciales de MongoDB, JWT y Cloudinary se administran de forma privada en el backend.
+
+## Estructura principal
 
 ```text
 lara-pasteleria/
 ├── docs/
-│   └── disenio-original.png
 ├── public/
-│   └── favicon.svg
 ├── src/
 │   ├── assets/
-│   │   ├── elementos/
-│   │   └── menu/
 │   ├── components/
 │   │   ├── Header/
 │   │   ├── Inicio/
 │   │   ├── Separador/
 │   │   ├── Menu/
-│   │   │   ├── Menu.jsx
-│   │   │   ├── Menu.css
-│   │   │   ├── TarjetaProducto.jsx
-│   │   │   └── TarjetaProducto.css
 │   │   ├── Pedidos/
 │   │   ├── Ubicacion/
 │   │   └── Footer/
@@ -99,297 +328,142 @@ lara-pasteleria/
 │   │   ├── catalogoLara.js
 │   │   ├── productosMenu.js
 │   │   └── configuracion.js
+│   ├── layouts/
+│   │   ├── AdminLayout.jsx
+│   │   └── AdminLayout.css
+│   ├── pages/
+│   │   ├── admin/
+│   │   └── clientes/
 │   ├── store/
 │   ├── styles/
-│   ├── App.css
 │   ├── App.jsx
-│   ├── index.css
 │   └── main.jsx
-├── .gitignore
-├── eslint.config.js
-├── index.html
 ├── package.json
 ├── pnpm-lock.yaml
-├── README.md
+├── vercel.json
 └── vite.config.js
 ```
 
-### Organización del código
-
-- `components/`: componentes reutilizables de la interfaz.
-- `assets/`: imágenes, ilustraciones y recursos gráficos.
-- `data/`: información del catálogo, productos y configuración.
-- `docs/`: documentación y diseño visual de referencia.
-- `public/`: archivos públicos, como el favicon.
-- `App.jsx`: integración de las secciones principales.
-- `main.jsx`: punto de entrada de la aplicación.
-
----
-
-## 🚀 Instalación y ejecución local
-
-### Requisitos previos
-
-Para ejecutar el proyecto es necesario contar con:
-
-- Node.js instalado.
-- pnpm instalado o disponible mediante Corepack.
-- Git.
-
-### 1. Clonar el repositorio
-
-```bash
-git clone https://github.com/sofiimendo/lara-pasteleria.git
-```
-
-### 2. Ingresar al directorio
-
-```bash
-cd lara-pasteleria
-```
-
-### 3. Instalar las dependencias
-
-El proyecto utiliza **pnpm** como gestor de paquetes.
-
-```bash
-pnpm install
-```
-
-### 4. Iniciar el servidor de desarrollo
-
-```bash
-pnpm dev
-```
-
-Vite mostrará una dirección local para acceder a la aplicación desde el navegador.
-
-Generalmente:
-
-```text
-http://localhost:5173/
-```
-
-Si ese puerto está ocupado, Vite utilizará otro disponible.
-
-**Nota:** si pnpm se administra mediante Corepack, también se pueden ejecutar los comandos utilizando `corepack pnpm`, por ejemplo:
-
-```bash
-corepack pnpm dev
-```
-
----
-
-## 📦 Compilación para producción
-
-Para generar una versión optimizada:
-
-```bash
-pnpm build
-```
-
-La compilación genera la carpeta:
-
-```text
-dist/
-```
-
-Esta carpeta contiene los archivos preparados para su publicación.
-
-Para previsualizar la versión compilada:
-
-```bash
-pnpm preview
-```
-
----
-
-## 📱 Diseño responsive
-
-La landing fue desarrollada para adaptarse a diferentes resoluciones y tamaños de pantalla.
-
-Se realizaron ajustes específicos en:
-
-- Header y navegación.
-- Distribución y animaciones de Inicio.
-- Menú y tarjetas de productos.
-- Formulario de Pedidos.
-- Espaciados, tamaños y disposición de elementos visuales.
-
-El objetivo es mantener una experiencia consistente tanto en computadoras como en dispositivos móviles.
-
----
-
-## 🧩 Arquitectura de componentes
-
-La aplicación utiliza una estructura modular basada en componentes React.
-
-La composición principal de `App.jsx` es:
-
-```jsx
-function App() {
-  return (
-    <>
-      <Header />
-      <main>
-        <Inicio />
-        <Separador />
-        <Menu />
-        <Pedidos />
-        <Ubicacion />
-      </main>
-      <Footer />
-    </>
-  );
-}
-```
-
-Esta organización permite mantener cada sección de manera independiente y facilita futuras modificaciones.
-
----
-
-## 🍰 Gestión de productos
-
-La información del menú se organiza mediante archivos de datos independientes de los componentes visuales.
-
-### `catalogoLara.js`
-
-Centraliza información del catálogo de productos.
-
-### `productosMenu.js`
-
-Organiza los productos que se muestran en el menú y establece su relación con el catálogo.
-
-### `TarjetaProducto.jsx`
-
-Componente encargado de presentar visualmente la información de cada producto.
-
-Esta separación permite mantener los datos y la interfaz organizados, evitando duplicar información innecesariamente.
-
----
-
-## 🔄 Trabajo colaborativo con Git y GitHub
-
-El proyecto fue desarrollado mediante un flujo de trabajo colaborativo.
-
-Se utilizaron:
-
-- Ramas independientes para desarrollar funcionalidades.
-- Commits descriptivos.
-- Pull Requests para integrar cambios.
-- Revisiones antes de realizar merges.
-- Rama `main` como versión integrada del proyecto.
-
-### Mejoras integradas
-
-- Desarrollo y adaptación del Header.
-- Implementación de Inicio y sus animaciones.
-- Integración del Menú con el catálogo.
-- Adaptación responsive de tarjetas y categorías.
-- Actualización del formulario de Pedidos.
-- Incorporación de Ubicación y Footer.
-- Reorganización de `App.jsx`.
-- Verificación de la compilación de producción.
-- Actualización del favicon.
-- Incorporación del diseño original como documentación.
-- Publicación del frontend en Vercel.
-
----
-
-## 🌐 Deploy
-
-La landing page de **Lara Pastelería** se encuentra publicada en **Vercel**, utilizando una compilación de producción realizada con Vite.
-
-### 🚀 Sitio web
-
-**[🌸 Visitar Lara Pastelería](https://lara-pasteleria.vercel.app/)**
-
-El proyecto está conectado al repositorio de GitHub y utiliza la rama `main` para su despliegue de producción.
-
-Para generar la compilación localmente:
-
-```bash
-pnpm build
-```
-
-La compilación genera la carpeta `dist/`, que contiene los archivos optimizados para su publicación.
-
-**Estado actual:** Frontend publicado y disponible online.
-
-La integración con el backend de Lara Stock se realizará en una etapa posterior.
-
-Para la publicación definitiva del sistema completo, se evaluará Hostinger u otra infraestructura compatible con los requerimientos del backend y la base de datos.
-
----
-
-## 🔮 Próximas funcionalidades
-
-Como evolución del proyecto, se contempla la integración con **Lara Stock**, el sistema de gestión del emprendimiento.
-
-Entre las funcionalidades previstas se encuentran:
-
-- Envío de pedidos de la landing al backend.
-- Administración y seguimiento de pedidos.
-- Control de stock de ingredientes y productos terminados.
-- Gestión de recetas y producciones.
-- Registro de ventas presenciales y pedidos web.
-- Seguimiento de ingresos, egresos y costos de producción.
-- Integración con una base de datos MongoDB.
-
-Estas funcionalidades forman parte de las próximas etapas del proyecto y no se consideran implementadas en la versión actual de la landing.
-
----
-
-## 🎨 Diseño de referencia
-
-La landing page de **Lara Pastelería** fue desarrollada a partir de una propuesta visual inicial que sirvió como guía para su diseño y desarrollo.
-
-Durante la implementación, realizamos modificaciones y mejoras para adaptar la propuesta a una página funcional y responsive desarrollada con React.
-
-### Propuesta visual original
+## Pruebas manuales confirmadas
+
+Resultados registrados durante la integración del 20 y 21 de octubre de 2026.
+
+### Web publicada: Vercel y Render
+
+| Área | Resultado comprobado |
+|---|---|
+| Login administrativo | Inicio de sesión y acceso al panel |
+| Diseño del login | Diseño nuevo visible en producción |
+| Perfil | Apertura del menú con mouse y cierre de sesión |
+| Productos | Listado con imágenes |
+| Productos | Creación de un producto temporal con foto |
+| Productos | Edición de nombre, precio y foto |
+| Productos | Conservación de los cambios después de recargar |
+| Productos | Eliminación y ausencia después de recargar |
+| Pedidos presenciales | Creación desde el panel |
+| Pedidos presenciales | Consulta de detalles y origen local físico |
+| Estados | Cambio a pendiente y conservación al recargar |
+| Dashboard | Pedido reciente y contador de pendientes actualizados |
+| Usuarios | Listado, creación y edición de una cuenta temporal |
+| Usuarios | Cambio a inactivo conservado al recargar |
+| Usuarios | Eliminación de la cuenta temporal |
+| Clientes | Registro e inicio de sesión |
+| Pedidos web | Envío desde una sesión cliente |
+| Pedidos web | Recepción en el panel con origen web, email y estado nuevo |
+| Pedidos web | Cambio a confirmado conservado al recargar |
+| Menú publicado | Visualización de “Productos del local” y “Catálogo original” |
+
+### Pruebas locales
+
+- Compilación de producción correcta con `pnpm build`.
+- Verificación de formato con `git diff --check`.
+- Mostrar y ocultar la contraseña en el login.
+- Corrección del clic del perfil en escritorio.
+- Apertura del perfil en modo celular.
+- Visualización del producto temporal de la API en el menú, con su precio.
+- Desaparición de ese producto al marcarlo como no disponible y recargar.
+- Funcionamiento de los controles de tarjetas en modo celular para ambas secciones.
+
+La visualización de las dos secciones se confirmó también después de publicar el menú. La prueba específica de desactivación y los controles móviles de esa nueva integración se realizaron en local.
+
+### Limpieza de datos de prueba
+
+- Se eliminó el producto temporal utilizado para crear y editar con imágenes.
+- Se eliminó el producto “Prueba conexión menú”.
+- Se eliminó la cuenta administradora temporal de la prueba de Usuarios.
+- Quedan pendientes de retirar los pedidos temporales “sofi prueba web” y “Prueba cliente web”.
+- Las cuentas cliente creadas para las pruebas deben revisarse antes del uso real.
+- La eliminación de productos no implica la eliminación de sus imágenes en Cloudinary.
+
+## Pendientes y límites actuales
+
+- Incorporar al frontend la edición de datos y eliminación de pedidos.
+- Migrar el catálogo original a una administración unificada, conservando presentaciones, precios a consultar y precios “desde”.
+- Resolver los productos equivalentes que pueden aparecer en ambas secciones durante la transición.
+- Repetir en producción las pruebas específicas de disponibilidad y controles móviles del menú conectado.
+- Completar la revisión responsive de todos los flujos en dispositivos reales.
+- Completar los escenarios de errores y límites de subida de imágenes.
+- Completar las verificaciones pendientes de autenticación, recuperación de bloqueos y límites detrás del proxy de Render.
+- Revisar el tratamiento de imágenes que quedan almacenadas después de editar o eliminar productos.
+- Actualizar la documentación y colección Postman del backend con los resultados más recientes.
+- Retirar los datos temporales pendientes.
+
+Las pruebas de seguridad detalladas del backend se registran en su repositorio. No se presentan como pruebas de la interfaz publicada los resultados obtenidos únicamente desde scripts o Postman.
+
+## Alcance
+
+El proyecto incluye consultas de pedidos web y carga administrativa de pedidos presenciales.
+
+No implementa:
+
+- Carrito.
+- Checkout o pagos online.
+- Control de stock de ingredientes.
+- Gestión de recetas y producción.
+- Registro contable de ingresos, egresos o costos.
+- Integración con el repositorio anterior `lara-stock`.
+- Notificaciones funcionales mediante la campanita.
+
+Las indicaciones de seña y presupuesto del catálogo son información para coordinar con Lara; no representan un sistema de cobro.
+
+## Trabajo colaborativo
+
+El desarrollo utiliza ramas por tarea, commits descriptivos y Pull Requests para integrar los cambios en `main`.
+
+El frontend y el backend se mantienen en repositorios separados.
+
+## Diseño de referencia
+
+El sitio utiliza una identidad visual compartida, con tonos verdes, beige y terracota, tipografías Fredoka y Quicksand y recursos gráficos propios.
+
+La propuesta original se conserva como referencia:
 
 ![Diseño original de Lara Pastelería](docs/disenio-original.png)
 
-*Diseño utilizado como referencia para el desarrollo de la landing page.*
+El panel comparte navegación lateral y estilos entre Dashboard, Productos, Pedidos y Usuarios.
 
----
+## Desarrolladoras
 
-## 👩‍💻 Desarrolladoras
+### Sofía Mendoza
 
-### 🌸 Sofía Mendoza
+- GitHub: [@sofiimendo](https://github.com/sofiimendo).
+- Desarrollo del backend y pruebas.
+- Integración entre frontend, API y despliegues.
+- Implementación de componentes y ajustes del frontend.
 
-- GitHub: [@sofiimendo](https://github.com/sofiimendo)
-- Desarrollo frontend y trabajo colaborativo.
-- Desarrollo e implementación de componentes en React.
+### Yamila Valdez Aguilar
 
-### 🎨 Yamila Valdez Aguilar
+- Diseño e identidad visual.
+- Desarrollo de la landing y del panel administrativo.
+- Implementación de Usuarios y carga de imágenes.
+- Adaptación responsive e integración de componentes.
 
-- Diseño de la landing page.
-- Desarrollo e implementación de componentes en React.
-- Adaptación responsive y mejoras de la interfaz.
+Proyecto desarrollado por Sofía Mendoza y Yamila Valdez Aguilar en el marco de la formación en desarrollo web.
 
----
+## Estado actual
 
-Proyecto desarrollado por **Sofía Mendoza y Yamila Valdez Aguilar** en el marco de la formación en **Desarrollo Frontend con React**.
+Frontend publicado en Vercel y conectado a la API de Render.
 
----
+Los flujos principales indicados en las pruebas manuales están comprobados. El catálogo mantiene una transición entre datos de la API y datos precargados, y continúan pendientes las tareas detalladas en este documento.
 
-## 📌 Estado del proyecto
-
-**Frontend finalizado, integrado en `main` y publicado en Vercel.**
-
-- Componentes principales implementados.
-- Diseño responsive incorporado.
-- Menú conectado con el catálogo de productos.
-- Compilación de producción verificada.
-- Deploy realizado exitosamente en Vercel.
-- URL pública disponible para la entrega del TP Final.
-- Integración con Lara Stock planificada para la próxima etapa.
-
-**🌐 Sitio web:** https://lara-pasteleria.vercel.app/
-
----
-
-### 🌸 Lara Pastelería
-
-*Opciones saludables, clásicas & cafecitos.*
+🌸 Opciones saludables, clásicas y cafecitos.
