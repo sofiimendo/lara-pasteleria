@@ -313,6 +313,16 @@ Las credenciales de MongoDB, JWT y Cloudinary se administran de forma privada en
 ```text
 lara-pasteleria/
 ├── docs/
+│   ├── disenio-original.png
+│   ├── landing-actualizada/
+│   │   ├── pantalla-principal.png
+│   │   └── formulario-pedidos.png
+│   └── panel-admin/
+│       ├── dashboard.png
+│       ├── login-admin.png
+│       ├── pedidos.png
+│       ├── productos.png
+│       └── usuarios.png
 ├── public/
 ├── src/
 │   ├── assets/
@@ -434,13 +444,63 @@ El frontend y el backend se mantienen en repositorios separados.
 
 ## Diseño de referencia
 
-El sitio utiliza una identidad visual compartida, con tonos verdes, beige y terracota, tipografías Fredoka y Quicksand y recursos gráficos propios.
+El sitio utiliza una identidad visual compartida, con tonos verdes, beige y terracota, tipografías Fredoka y Quicksand con recursos gráficos propios.
 
-La propuesta original se conserva como referencia:
+## Diseño original de la landing
+
+La propuesta original de Lara Pastelería se conserva como referencia para el desarrollo del proyecto.
 
 ![Diseño original de Lara Pastelería](docs/disenio-original.png)
 
-El panel comparte navegación lateral y estilos entre Dashboard, Productos, Pedidos y Usuarios.
+## Evolución de la landing e integración con el backend
+
+A partir de la landing existente, se realizaron adaptaciones para incorporar las funcionalidades necesarias para su integración con el backend, sin modificar la identidad visual original.
+
+Se incorporaron accesos para el registro e inicio de sesión de clientes y se adaptó el formulario de eventos y encargos para permitir la gestión de pedidos mediante la API.
+
+Estas modificaciones respetan la distribución de los elementos, la paleta de colores, las tipografías Fredoka y Quicksand, las imágenes y la estética de los botones del diseño original.
+
+## Actualización de la pantalla principal:
+
+![Actualización de la pantalla principal](docs/landing-actualizada/pantalla-principal.png)
+
+Actualización del formulario de pedidos:
+
+![Actualización del formulario de pedidos](docs/landing-actualizada/formulario-pedidos.png)
+
+## Diseño de referencia del panel administrativo
+
+Como parte de la integración del frontend con el backend, se desarrolló una propuesta visual para el panel administrativo de Lara Pastelería.
+
+El objetivo fue crear una interfaz que permitiera visualizar y gestionar la información del sistema de manera clara e intuitiva, manteniendo la identidad visual de la landing original.
+
+Para su diseño se tomaron como referencia los mismos colores, tipografías, recursos gráficos, botones y criterios de distribución utilizados en la landing, buscando mantener una experiencia visual coherente entre ambas interfaces.
+
+A partir de estas propuestas se desarrollaron las pantallas funcionales del panel administrativo.
+
+Login administrativo — Acceso protegido al panel.
+
+![Diseño del Login administrativo](docs/panel-admin/login-admin.png)
+
+Dashboard — Resumen general de la actividad y los pedidos.
+
+![Diseño del Dashboard](docs/panel-admin/dashboard.png)
+
+Productos — Administración del catálogo.
+
+![Diseño de Productos](docs/panel-admin/productos.png)
+
+Pedidos — Consulta y seguimiento de los encargos.
+
+![Diseño de Pedidos](docs/panel-admin/pedidos.png)
+
+Usuarios — Administración de las cuentas autorizadas.
+
+![Diseño de Usuarios](docs/panel-admin/usuarios.png)
+
+Las imágenes anteriores representan los diseños utilizados como punto de partida para desarrollar el frontend del panel administrativo, conectado con la API REST y la base de datos MongoDB.
+
+De esta manera, el proyecto mantiene una identidad visual unificada entre la landing pública, las funcionalidades para clientes y las herramientas de administración.
 
 ## Desarrolladoras
 
