@@ -127,6 +127,12 @@ function Header() {
             UBICACIÓN
           </a>
 
+          {cliente && (
+            <Link to="/mis-pedidos" onClick={cerrarMenu}>
+              MIS PEDIDOS
+            </Link>
+          )}
+
           {cliente ? (
             <div className="header__sesion">
               <span className="header__cliente">

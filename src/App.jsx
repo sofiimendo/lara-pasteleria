@@ -14,6 +14,7 @@ import PedidosAdmin from "./pages/admin/Pedidos";
 import UsuariosAdmin from "./pages/admin/Usuarios";
 import Registro from "./pages/clientes/Registro";
 import LoginCliente from "./pages/clientes/Login";
+import MisPedidos from "./pages/clientes/MisPedidos";
 
 function Landing() {
   return (
@@ -40,6 +41,7 @@ function App() {
 
       <Route path="/registro" element={<Registro />} />
       <Route path="/login" element={<LoginCliente />} />
+      <Route path="/mis-pedidos" element={<MisPedidos />} />
 
       <Route path="/admin/login" element={<Login />} />
 
