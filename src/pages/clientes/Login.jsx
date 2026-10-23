@@ -38,7 +38,7 @@ export default function LoginCliente() {
     setCargando(true);
 
     try {
-      const respuesta = await fetch(`${API_URL}/api/clientes/login`, {
+      const respuesta = await fetch(`${API_URL}/api/auth/login-unificado`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -58,20 +58,37 @@ export default function LoginCliente() {
         return;
       }
 
+      const usuario = resultado.usuario;
+
       if (
         typeof resultado.token !== "string" ||
         !resultado.token ||
-        resultado.cliente?.rol !== "cliente"
+        !["admin", "cliente"].includes(usuario?.rol)
       ) {
         setMensaje("La respuesta del servidor no es válida.");
         return;
       }
 
-      sessionStorage.setItem("lara_cliente_token", resultado.token);
+      sessionStorage.removeItem("lara_cliente_token");
+      sessionStorage.removeItem("lara_cliente");
+      sessionStorage.removeItem("lara_admin_token");
+      sessionStorage.removeItem("lara_admin_usuario");
 
+      if (usuario.rol === "admin") {
+        sessionStorage.setItem("lara_admin_token", resultado.token);
+        sessionStorage.setItem(
+          "lara_admin_usuario",
+          JSON.stringify(usuario)
+        );
+
+        navigate("/admin", { replace: true });
+        return;
+      }
+
+      sessionStorage.setItem("lara_cliente_token", resultado.token);
       sessionStorage.setItem(
         "lara_cliente",
-        JSON.stringify(resultado.cliente)
+        JSON.stringify(usuario)
       );
 
       navigate("/", { replace: true });
@@ -94,7 +111,7 @@ export default function LoginCliente() {
         <h1 className="registro__titulo">Iniciar sesión</h1>
 
         <p className="registro__descripcion">
-          Ingresá a tu cuenta para enviar consultas a Lara Pastelería.
+          Ingresá a tu cuenta de Lara Pastelería.
         </p>
 
         <form
@@ -113,7 +130,7 @@ export default function LoginCliente() {
             onChange={actualizarCampo}
             required
             maxLength={254}
-            autoComplete="email"
+            autoComplete="username"
             disabled={cargando}
           />
 
