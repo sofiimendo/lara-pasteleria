@@ -141,7 +141,7 @@ export default function Registro() {
               value={datos.password}
               onChange={actualizarCampo}
               required
-              minLength={12}
+              minLength={8}
               autoComplete="new-password"
               disabled={cargando}
             />
@@ -163,7 +163,7 @@ export default function Registro() {
           </div>
 
           <p className="registro__ayuda">
-            Debe tener al menos 12 caracteres.
+            Debe tener al menos 8 caracteres.
           </p>
 
           <label htmlFor="registro-confirmar">
@@ -178,7 +178,7 @@ export default function Registro() {
               value={datos.confirmarPassword}
               onChange={actualizarCampo}
               required
-              minLength={12}
+              minLength={8}
               autoComplete="new-password"
               disabled={cargando}
             />
