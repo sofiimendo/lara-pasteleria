@@ -2,7 +2,7 @@
 
 Aplicación web para Lara Pastelería, un emprendimiento que combina pastelería clásica, opciones saludables y cafetería.
 
-Incluye una landing pública, registro e inicio de sesión de clientes y un panel administrativo para gestionar productos, pedidos y cuentas administradoras.
+Incluye una landing pública, registro de clientes, inicio de sesión compartido, consulta de pedidos propios y un panel administrativo para gestionar productos, pedidos y cuentas administradoras.
 
 El sistema permite enviar consultas por encargo. Completar el formulario no confirma el pedido: Lara informa disponibilidad y presupuesto.
 
@@ -13,13 +13,16 @@ No incluye carrito ni pagos online.
 | Recurso | Dirección |
 |---|---|
 | Sitio publicado | https://lara-pasteleria.vercel.app |
-| Login de clientes | https://lara-pasteleria.vercel.app/login |
+| Login compartido | https://lara-pasteleria.vercel.app/login |
 | Registro de clientes | https://lara-pasteleria.vercel.app/registro |
-| Login administrativo | https://lara-pasteleria.vercel.app/admin/login |
+| Mis pedidos, requiere sesión cliente | https://lara-pasteleria.vercel.app/mis-pedidos |
+| Login exclusivo de administradores | https://lara-pasteleria.vercel.app/admin/login |
 | API publicada | https://lara-backend-5tq4.onrender.com |
 | Estado de la API | https://lara-backend-5tq4.onrender.com/api/health |
 | Repositorio frontend | https://github.com/sofiimendo/lara-pasteleria |
 | Repositorio backend | https://github.com/sofiimendo/lara-backend |
+| Documentación de la API | https://github.com/sofiimendo/lara-backend#readme |
+| Colección de Postman | https://github.com/sofiimendo/lara-backend/blob/main/postman/Lara-Pasteleria-API.postman_collection.json |
 
 ## Tecnologías
 
@@ -29,7 +32,7 @@ No incluye carrito ni pagos online.
 | React Router | Navegación y rutas |
 | Zustand | Estado del formulario de pedidos |
 | Vite | Desarrollo y compilación |
-| CSS y SCSS | Diseño responsive y estilos |
+| CSS | Estilos y diseño responsive |
 | Fetch API | Comunicación con el backend |
 | pnpm | Gestión de dependencias |
 | Git y GitHub | Versionado y trabajo colaborativo |
@@ -38,7 +41,7 @@ No incluye carrito ni pagos online.
 | MongoDB Atlas | Persistencia de datos mediante la API |
 | Cloudinary | Almacenamiento de imágenes mediante el backend |
 
-El backend utiliza Node.js, Express, Mongoose, Zod, JWT, bcrypt, express-rate-limit y Multer. Su configuración y sus pruebas se documentan en el repositorio `lara-backend`.
+El backend utiliza Node.js, Express, Mongoose, Zod, JWT, bcrypt, express-rate-limit y Multer. Su configuración, endpoints y pruebas se documentan en el repositorio `lara-backend`.
 
 ## Funcionalidades
 
@@ -49,7 +52,9 @@ El backend utiliza Node.js, Express, Mongoose, Zod, JWT, bcrypt, express-rate-li
 - Menú organizado por categorías.
 - Formulario de consultas autenticado.
 - Ubicación, horarios y contacto.
-- Diseño adaptado a computadoras y celulares.
+- Acceso al login compartido.
+- Acceso a Mis pedidos para clientes con sesión iniciada.
+- Navegación adaptada a computadoras y celulares.
 
 ### Menú y productos
 
@@ -65,7 +70,7 @@ El menú mantiene dos secciones diferenciadas.
 - Muestra estados de carga, error y listado vacío.
 - Permite reintentar si falla la conexión.
 
-La consulta se realiza al montar el componente. Para comprobar cambios hechos desde otra ventana, se debe recargar la landing.
+La consulta se realiza al montar el componente. Para ver cambios hechos desde otra ventana, se debe recargar la landing.
 
 #### Catálogo original
 
@@ -77,15 +82,28 @@ La consulta se realiza al montar el componente. Para comprobar cambios hechos de
 
 Esta separación es una transición. El catálogo original todavía no se administra desde el panel y puede contener productos equivalentes a los de la sección conectada a la API.
 
-Desactivar o eliminar un producto del panel afecta a su registro en “Productos del local”; no modifica los datos independientes del catálogo original.
+Desactivar o eliminar un producto del panel afecta a su registro en Productos del local; no modifica los datos independientes del catálogo original.
 
-### Clientes
+### Registro e inicio de sesión
 
-- Registro de cuentas.
-- Inicio y cierre de sesión.
-- Validación de confirmación de contraseña en el registro.
-- Envío de consultas con token de cliente.
-- Sesión de cliente separada de la administrativa.
+- Registro público de clientes mediante `POST /api/clientes/registro`.
+- Confirmación de contraseña en el registro.
+- Mínimo de 8 caracteres y máximo de 72 bytes UTF-8 para registrar clientes.
+- Inicio de sesión compartido mediante `POST /api/auth/login-unificado`.
+- Redirección de administradores al panel y de clientes al inicio.
+- Acceso administrativo independiente mediante `POST /api/auth/login`.
+- Botones para mostrar y ocultar la contraseña.
+- Cierre de sesión.
+
+El login compartido recibe `{ token, usuario }` y guarda la sesión según el rol devuelto por el backend.
+
+Los tokens y los datos de sesión se almacenan en `sessionStorage`, por lo que la sesión corresponde a cada pestaña y origen del navegador. La versión local y la publicada no comparten sesión.
+
+El login compartido reemplaza los datos de sesión guardados en esa pestaña al completar un nuevo acceso.
+
+El backend mantiene tokens con audiencias diferentes para clientes y administradores. Los permisos se verifican en las rutas de la API.
+
+No existe registro público de administradores. Sus cuentas se crean desde el panel por otra cuenta autorizada.
 
 ### Formulario público de pedidos
 
@@ -96,10 +114,33 @@ Desactivar o eliminar un producto del panel afecta a su registro en “Productos
 - Cantidad aproximada de personas.
 - Detalles adicionales.
 - Mensajes de validación y resultado del envío.
+- Envío mediante `POST /api/pedidos` con token cliente.
 
 La API vincula cada pedido con el cliente autenticado. El email de contacto no determina la propiedad del pedido.
 
 Las tortas y medialunas requieren al menos cinco días de anticipación. Las demás opciones admiten fechas desde hoy. El backend calcula estas reglas según Buenos Aires.
+
+### Mis pedidos
+
+- Ruta `/mis-pedidos`.
+- Acceso desde el Header para clientes con sesión iniciada.
+- Consulta `GET /api/pedidos/mis-pedidos` con el token cliente.
+- Listado de pedidos vinculados a la cuenta autenticada.
+- Tipo de pedido, fecha solicitada, personas, evento y detalles.
+- Estados: nuevo, pendiente, confirmado, entregado y cancelado.
+- Mensajes de carga, error y listado vacío.
+- Botón para reintentar ante errores.
+- Redirección al login si falta el token o la API responde 401.
+- Diseño adaptado a escritorio y celular.
+
+Los pedidos se consultan al abrir la pantalla. Si Lara cambia un estado mientras el cliente la mantiene abierta, el cliente debe recargar para verlo. No hay actualización en tiempo real.
+
+Flujo comprobado en producción:
+
+1. Un cliente envía una consulta.
+2. La consulta aparece en el panel administrativo.
+3. Una administradora cambia el estado a confirmado.
+4. El cliente recarga Mis pedidos y ve el estado confirmado.
 
 ### Panel administrativo
 
@@ -138,7 +179,7 @@ Los pedidos presenciales requieren al menos un contacto: email o teléfono.
 
 El backend contempla una confirmación administrativa para tortas y medialunas con menos de cinco días de anticipación. No permite fechas pasadas.
 
-La pantalla actual permite consultar detalles y cambiar estados. La edición de los datos y la eliminación de pedidos desde el frontend siguen pendientes, aunque la API dispone de esas operaciones.
+La edición completa de datos y la eliminación de pedidos existen en la API, pero todavía no están disponibles en la interfaz administrativa.
 
 #### Usuarios
 
@@ -150,13 +191,15 @@ La pantalla actual permite consultar detalles y cambiar estados. La edición de 
 
 El backend impide que una cuenta administradora se elimine o se desactive a sí misma.
 
+El backend admite contraseñas desde 8 caracteres y hasta 72 bytes UTF-8. El formulario de creación de administradores todavía exige 12 caracteres; su ajuste está pendiente.
+
 #### Perfil y navegación
 
 - Menú lateral compartido.
 - Navegación adaptada a celular.
 - Menú del perfil con cierre de sesión.
 - Login administrativo con diseño propio.
-- Botón para mostrar y ocultar la contraseña.
+- Protección de acceso a las pantallas administrativas.
 
 La campanita es un elemento visual marcado como “Notificaciones: próximamente”. No implementa notificaciones.
 
@@ -166,8 +209,9 @@ La campanita es un elemento visual marcado como “Notificaciones: próximamente
 |---|---|
 | `/` | Landing |
 | `/registro` | Registro de clientes |
-| `/login` | Login de clientes |
-| `/admin/login` | Login administrativo |
+| `/login` | Login compartido de clientes y administradores |
+| `/mis-pedidos` | Pedidos propios del cliente |
+| `/admin/login` | Login exclusivo de administradores |
 | `/admin` | Dashboard |
 | `/admin/productos` | Administración de productos |
 | `/admin/pedidos` | Administración de pedidos |
@@ -179,7 +223,7 @@ El acceso al panel requiere una sesión administrativa. Las autorizaciones de la
 
 ### Requisitos
 
-- Node.js.
+- Node.js compatible con la versión de Vite del proyecto.
 - pnpm.
 - Git.
 - Backend disponible para utilizar las funciones conectadas.
@@ -189,10 +233,10 @@ El acceso al panel requiere una sesión administrativa. Las autorizaciones de la
 ```bash
 git clone https://github.com/sofiimendo/lara-pasteleria.git
 cd lara-pasteleria
-pnpm install
+pnpm install --frozen-lockfile
 ```
 
-Si el entorno administra pnpm mediante Corepack, se puede utilizar `corepack pnpm` en los comandos.
+Si el entorno administra pnpm mediante Corepack, se puede utilizar `corepack pnpm` en los comandos. En equipos con pnpm instalado directamente, se utiliza `pnpm`.
 
 ### Dirección de la API
 
@@ -246,6 +290,8 @@ Para comprobar el backend local:
 curl --max-time 10 -i http://localhost:4000/api/health
 ```
 
+Si el frontend apunta a `http://localhost:4000`, el backend local debe estar encendido. Abrir Vite por sí solo no inicia la API.
+
 Las variables configuradas en Render no se copian automáticamente al entorno local.
 
 La carga de imágenes local requiere configurar de forma privada las variables de Cloudinary en el backend. Durante una prueba se comprobó que, sin esa configuración, la subida falla aunque el frontend abra correctamente.
@@ -294,7 +340,7 @@ El archivo `vercel.json` permite abrir directamente y recargar las rutas del fro
 }
 ```
 
-Se corrigió el 404 que aparecía al abrir directamente el login administrativo publicado.
+Se comprobó el acceso publicado al login administrativo y a Mis pedidos.
 
 ### Backend en Render
 
@@ -307,6 +353,10 @@ https://lara-pasteleria.vercel.app
 ```
 
 Las credenciales de MongoDB, JWT y Cloudinary se administran de forma privada en el backend.
+
+La aplicación publicada utiliza Vercel, Render, MongoDB Atlas y Cloudinary. No necesita los servidores locales de desarrollo para funcionar.
+
+Se configuró UptimeRobot para consultar `/api/health`. Este endpoint comprueba la respuesta del servidor HTTP; no verifica todos los flujos de la aplicación.
 
 ## Estructura principal
 
@@ -327,23 +377,16 @@ lara-pasteleria/
 ├── src/
 │   ├── assets/
 │   ├── components/
-│   │   ├── Header/
-│   │   ├── Inicio/
-│   │   ├── Separador/
-│   │   ├── Menu/
-│   │   ├── Pedidos/
-│   │   ├── Ubicacion/
-│   │   └── Footer/
 │   ├── data/
-│   │   ├── catalogoLara.js
-│   │   ├── productosMenu.js
-│   │   └── configuracion.js
 │   ├── layouts/
-│   │   ├── AdminLayout.jsx
-│   │   └── AdminLayout.css
 │   ├── pages/
 │   │   ├── admin/
 │   │   └── clientes/
+│   │       ├── Login.jsx
+│   │       ├── Registro.jsx
+│   │       ├── Registro.css
+│   │       ├── MisPedidos.jsx
+│   │       └── MisPedidos.css
 │   ├── store/
 │   ├── styles/
 │   ├── App.jsx
@@ -356,9 +399,7 @@ lara-pasteleria/
 
 ## Pruebas manuales confirmadas
 
-Resultados registrados durante la integración del 20 y 21 de octubre de 2026.
-
-### Web publicada: Vercel y Render
+### Integración publicada del 20 y 21 de octubre de 2026
 
 | Área | Resultado comprobado |
 |---|---|
@@ -381,9 +422,36 @@ Resultados registrados durante la integración del 20 y 21 de octubre de 2026.
 | Pedidos web | Envío desde una sesión cliente |
 | Pedidos web | Recepción en el panel con origen web, email y estado nuevo |
 | Pedidos web | Cambio a confirmado conservado al recargar |
-| Menú publicado | Visualización de “Productos del local” y “Catálogo original” |
+| Menú publicado | Visualización de Productos del local y Catálogo original |
 
-### Pruebas locales
+### Verificación del 23 de octubre de 2026
+
+#### En local
+
+- Registro e inicio de sesión de una cuenta de prueba después de ajustar el mínimo del registro a 8 caracteres.
+- Login compartido con administrador y redirección al panel.
+- Login compartido con cliente y redirección al inicio con saludo.
+- Acceso a `/admin` con solo sesión cliente: redirección al login administrativo.
+- Rechazo de credenciales cliente desde el login exclusivo de administradores.
+- Listado de pedidos propios.
+- Navegación desde el Header a Mis pedidos.
+- Acceso a Mis pedidos desde el menú móvil.
+- Compilación correcta con `pnpm build` después del login compartido y de Mis pedidos.
+
+#### En producción
+
+- Texto del registro actualizado al mínimo de 8 caracteres.
+- Inicio de sesión con la cuenta cliente de prueba.
+- Login compartido con administrador y acceso al panel.
+- Login compartido con cliente y acceso al inicio con saludo.
+- Acceso a Mis pedidos desde el Header y visualización del diseño aprobado.
+- Consulta de Mesa dulce para el 30/10/2026, cinco personas, evento Reunión.
+- Cambio de estado de esa consulta desde el panel administrativo.
+- Visualización del estado Confirmado al recargar Mis pedidos desde la sesión cliente.
+
+Estas pruebas comprueban los recorridos indicados. No equivalen a una revisión exhaustiva de permisos, errores, sesiones vencidas y dispositivos.
+
+### Pruebas locales anteriores
 
 - Compilación de producción correcta con `pnpm build`.
 - Verificación de formato con `git diff --check`.
@@ -394,38 +462,43 @@ Resultados registrados durante la integración del 20 y 21 de octubre de 2026.
 - Desaparición de ese producto al marcarlo como no disponible y recargar.
 - Funcionamiento de los controles de tarjetas en modo celular para ambas secciones.
 
-La visualización de las dos secciones se confirmó también después de publicar el menú. La prueba específica de desactivación y los controles móviles de esa nueva integración se realizaron en local.
+La visualización de las dos secciones se confirmó también después de publicar el menú. La prueba específica de desactivación y los controles móviles de esa integración se realizaron en local.
 
 ### Limpieza de datos de prueba
 
 - Se eliminó el producto temporal utilizado para crear y editar con imágenes.
-- Se eliminó el producto “Prueba conexión menú”.
+- Se eliminó el producto Prueba conexión menú.
 - Se eliminó la cuenta administradora temporal de la prueba de Usuarios.
-- Quedan pendientes de retirar los pedidos temporales “sofi prueba web” y “Prueba cliente web”.
-- Las cuentas cliente creadas para las pruebas deben revisarse antes del uso real.
+- Revisar los pedidos temporales, incluidas las consultas utilizadas el 23/10, antes del uso real.
+- Revisar las cuentas cliente de prueba antes del uso real.
 - La eliminación de productos no implica la eliminación de sus imágenes en Cloudinary.
 
 ## Pendientes y límites actuales
 
-- Incorporar al frontend la edición de datos y eliminación de pedidos.
-- Migrar el catálogo original a una administración unificada, conservando presentaciones, precios a consultar y precios “desde”.
+- Ajustar el formulario de creación de administradores de 12 a 8 caracteres, conservando el máximo de 72 bytes.
+- Incorporar al frontend la edición completa de datos y eliminación de pedidos si se amplía la interfaz.
+- Migrar el catálogo original a una administración unificada si se decide gestionar todos los productos desde MongoDB.
+- Conservar presentaciones, precios a consultar y precios “desde” al migrar.
 - Resolver los productos equivalentes que pueden aparecer en ambas secciones durante la transición.
 - Repetir en producción las pruebas específicas de disponibilidad y controles móviles del menú conectado.
 - Completar la revisión responsive de todos los flujos en dispositivos reales.
 - Completar los escenarios de errores y límites de subida de imágenes.
-- Completar las verificaciones pendientes de autenticación, recuperación de bloqueos y límites detrás del proxy de Render.
+- Completar las verificaciones de sesiones vencidas, permisos del login unificado, recuperación de bloqueos y límites detrás del proxy de Render.
 - Revisar el tratamiento de imágenes que quedan almacenadas después de editar o eliminar productos.
-- Actualizar la documentación y colección Postman del backend con los resultados más recientes.
-- Retirar los datos temporales pendientes.
+- Incorporar el login unificado y sus pruebas a la colección Postman del backend.
+- Retirar los datos temporales que se confirme que ya no son necesarios.
 
 Las pruebas de seguridad detalladas del backend se registran en su repositorio. No se presentan como pruebas de la interfaz publicada los resultados obtenidos únicamente desde scripts o Postman.
 
 ## Alcance
 
-El proyecto incluye consultas de pedidos web y carga administrativa de pedidos presenciales.
+El proyecto incluye consultas de pedidos web, seguimiento de estados para clientes y carga administrativa de pedidos presenciales.
 
 No implementa:
 
+- Recuperación de contraseña.
+- Envío automático de correos.
+- Actualización de estados en tiempo real.
 - Carrito.
 - Checkout o pagos online.
 - Control de stock de ingredientes.
@@ -433,6 +506,8 @@ No implementa:
 - Registro contable de ingresos, egresos o costos.
 - Integración con el repositorio anterior `lara-stock`.
 - Notificaciones funcionales mediante la campanita.
+
+El email ingresado se utiliza como dato de contacto; no genera por sí solo un correo automático.
 
 Las indicaciones de seña y presupuesto del catálogo son información para coordinar con Lara; no representan un sistema de cobro.
 
@@ -444,65 +519,75 @@ El frontend y el backend se mantienen en repositorios separados.
 
 ## Diseño de referencia
 
-El sitio utiliza una identidad visual compartida, con tonos verdes, beige y terracota, tipografías Fredoka y Quicksand con recursos gráficos propios.
+El sitio utiliza una identidad visual compartida, con tonos verdes, beige y terracota, tipografías Fredoka y Quicksand y recursos gráficos propios.
 
-## Diseño original de la landing
+### Diseño original de la landing
 
 La propuesta original de Lara Pastelería se conserva como referencia para el desarrollo del proyecto.
 
 ![Diseño original de Lara Pastelería](docs/disenio-original.png)
 
-## Evolución de la landing e integración con el backend
+### Evolución de la landing e integración con el backend
 
-A partir de la landing existente, se realizaron adaptaciones para incorporar las funcionalidades necesarias para su integración con el backend, sin modificar la identidad visual original.
+A partir de la landing existente, se realizaron adaptaciones para incorporar las funcionalidades necesarias para su integración con el backend, manteniendo la identidad visual original.
 
-Se incorporaron accesos para el registro e inicio de sesión de clientes y se adaptó el formulario de eventos y encargos para permitir la gestión de pedidos mediante la API.
+Se incorporaron accesos para el registro e inicio de sesión y se adaptó el formulario de eventos y encargos para permitir la gestión de pedidos mediante la API.
 
-Estas modificaciones respetan la distribución de los elementos, la paleta de colores, las tipografías Fredoka y Quicksand, las imágenes y la estética de los botones del diseño original.
+Posteriormente se incorporaron el login compartido y la pantalla Mis pedidos.
 
-## Actualización de la pantalla principal:
+Las adaptaciones utilizan la paleta de colores, las tipografías Fredoka y Quicksand, las imágenes y la estética de los botones del diseño original.
+
+#### Actualización de la pantalla principal
 
 ![Actualización de la pantalla principal](docs/landing-actualizada/pantalla-principal.png)
 
-Actualización del formulario de pedidos:
+#### Actualización del formulario de pedidos
 
 ![Actualización del formulario de pedidos](docs/landing-actualizada/formulario-pedidos.png)
 
-## Diseño de referencia del panel administrativo
+### Diseño de referencia del panel administrativo
 
 Como parte de la integración del frontend con el backend, se desarrolló una propuesta visual para el panel administrativo de Lara Pastelería.
 
 El objetivo fue crear una interfaz que permitiera visualizar y gestionar la información del sistema de manera clara e intuitiva, manteniendo la identidad visual de la landing original.
 
-Para su diseño se tomaron como referencia los mismos colores, tipografías, recursos gráficos, botones y criterios de distribución utilizados en la landing, buscando mantener una experiencia visual coherente entre ambas interfaces.
+Para su diseño se tomaron como referencia los mismos colores, tipografías, recursos gráficos, botones y criterios de distribución utilizados en la landing.
 
 A partir de estas propuestas se desarrollaron las pantallas funcionales del panel administrativo.
 
-Login administrativo — Acceso protegido al panel.
+#### Login administrativo
+
+Acceso protegido al panel.
 
 ![Diseño del Login administrativo](docs/panel-admin/login-admin.png)
 
-Dashboard — Resumen general de la actividad y los pedidos.
+#### Dashboard
+
+Resumen general de la actividad y los pedidos.
 
 ![Diseño del Dashboard](docs/panel-admin/dashboard.png)
 
-Productos — Administración del catálogo.
+#### Productos
+
+Administración del catálogo.
 
 ![Diseño de Productos](docs/panel-admin/productos.png)
 
-Pedidos — Consulta y seguimiento de los encargos.
+#### Pedidos
+
+Consulta y seguimiento de los encargos.
 
 ![Diseño de Pedidos](docs/panel-admin/pedidos.png)
 
-Usuarios — Administración de las cuentas autorizadas.
+#### Usuarios
+
+Administración de las cuentas autorizadas.
 
 ![Diseño de Usuarios](docs/panel-admin/usuarios.png)
 
-Las imágenes anteriores representan los diseños utilizados como punto de partida para desarrollar el frontend del panel administrativo, conectado con la API REST y la base de datos MongoDB.
+Las imágenes anteriores representan los diseños utilizados como punto de partida para desarrollar el frontend del panel administrativo, conectado con la API REST y MongoDB.
 
-De esta manera, el proyecto mantiene una identidad visual unificada entre la landing pública, las funcionalidades para clientes y las herramientas de administración.
-
-## Desarrolladoras
+## Desarrolladoras del frontend
 
 ### Sofía Mendoza
 
@@ -518,12 +603,14 @@ De esta manera, el proyecto mantiene una identidad visual unificada entre la lan
 - Implementación de Usuarios y carga de imágenes.
 - Adaptación responsive e integración de componentes.
 
-Proyecto desarrollado por Sofía Mendoza y Yamila Valdez Aguilar en el marco de la formación en desarrollo web.
+Frontend desarrollado por Sofía Mendoza y Yamila Valdez Aguilar en el marco de la formación en desarrollo web.
 
 ## Estado actual
 
 Frontend publicado en Vercel y conectado a la API de Render.
 
-Los flujos principales indicados en las pruebas manuales están comprobados. El catálogo mantiene una transición entre datos de la API y datos precargados, y continúan pendientes las tareas detalladas en este documento.
+El login compartido permite acceder según el rol de la cuenta. Los clientes pueden consultar sus pedidos y ver los cambios de estado al volver a abrir la pantalla o recargarla.
+
+Los recorridos indicados en las pruebas manuales están comprobados. El catálogo mantiene una transición entre datos de la API y datos precargados, y continúan pendientes las tareas detalladas en este documento.
 
 🌸 Opciones saludables, clásicas y cafecitos.
